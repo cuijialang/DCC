@@ -29,7 +29,13 @@
 			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
 			pcie_hard_ip_0_reconfig_togxb_data                : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- data
-			pcie_hard_ip_0_reconfig_fromgxb_0_data            : out std_logic_vector(4 downto 0)                      -- data
+			pcie_hard_ip_0_reconfig_fromgxb_0_data            : out std_logic_vector(4 downto 0);                     -- data
+			ada_fifo_in_valid                                 : in  std_logic                     := 'X';             -- valid
+			ada_fifo_in_data                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
+			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
+			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
+			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
+			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X'              -- clk
 		);
 	end component DCC_QSYS;
 
@@ -64,6 +70,12 @@
 			pcie_hard_ip_0_rx_in_rx_datain_0                  => CONNECTED_TO_pcie_hard_ip_0_rx_in_rx_datain_0,                  --              pcie_hard_ip_0_rx_in.rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => CONNECTED_TO_pcie_hard_ip_0_tx_out_tx_dataout_0,                --             pcie_hard_ip_0_tx_out.tx_dataout_0
 			pcie_hard_ip_0_reconfig_togxb_data                => CONNECTED_TO_pcie_hard_ip_0_reconfig_togxb_data,                --     pcie_hard_ip_0_reconfig_togxb.data
-			pcie_hard_ip_0_reconfig_fromgxb_0_data            => CONNECTED_TO_pcie_hard_ip_0_reconfig_fromgxb_0_data             -- pcie_hard_ip_0_reconfig_fromgxb_0.data
+			pcie_hard_ip_0_reconfig_fromgxb_0_data            => CONNECTED_TO_pcie_hard_ip_0_reconfig_fromgxb_0_data,            -- pcie_hard_ip_0_reconfig_fromgxb_0.data
+			ada_fifo_in_valid                                 => CONNECTED_TO_ada_fifo_in_valid,                                 --                       ada_fifo_in.valid
+			ada_fifo_in_data                                  => CONNECTED_TO_ada_fifo_in_data,                                  --                                  .data
+			ada_fifo_in_channel                               => CONNECTED_TO_ada_fifo_in_channel,                               --                                  .channel
+			ada_fifo_in_error                                 => CONNECTED_TO_ada_fifo_in_error,                                 --                                  .error
+			ada_fifo_in_ready                                 => CONNECTED_TO_ada_fifo_in_ready,                                 --                                  .ready
+			ada_fifo_clk_in_clk                               => CONNECTED_TO_ada_fifo_clk_in_clk                                --                   ada_fifo_clk_in.clk
 		);
 

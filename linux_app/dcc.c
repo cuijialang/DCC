@@ -9,14 +9,14 @@
 #define DEMO_PCIE_IO_LED_ADDR		0x00
 /*#define DEMO_PCIE_IO_BUTTON_ADDR	0x20
 #define DEMO_PCIE_FIFO_WRITE_ADDR	0x40
-#define DEMO_PCIE_FIFO_STATUS_ADDR	0x60
-#define DEMO_PCIE_FIFO_READ_ADDR	0x80*/
+#define DEMO_PCIE_FIFO_STATUS_ADDR	0x60*/
+#define DEMO_PCIE_FIFO_READ_ADDR	0x80
 #define DEMO_PCIE_IO_SWITCH_ADDR	0xA0
 //#define DEMO_PCIE_IO_SPI_ADDR	0xC0
 #define DEMO_PCIE_MEM_ADDR			0x20000
 
 //#define MEM_SIZE			(128*1024) //128KB
-//#define FIFO_SIZE			(16*1024) // 2KBx8
+#define FIFO_SIZE			(32*8192) // 
 
 
 
@@ -178,12 +178,12 @@ BOOL TEST_DMA_MEMORY(PCIE_HANDLE hPCIe){
 
 	return bPass;
 }
-
+*/
 BOOL TEST_DMA_FIFO(PCIE_HANDLE hPCIe){
 	BOOL bPass=TRUE;
 	int i;
 	const int nTestSize = FIFO_SIZE;
-	const PCIE_LOCAL_ADDRESS FifoID_Write = DEMO_PCIE_FIFO_WRITE_ADDR;
+
 	const PCIE_LOCAL_ADDRESS FifoID_Read = DEMO_PCIE_FIFO_READ_ADDR;
 	char *pBuff;
 	char szError[256];
@@ -195,20 +195,6 @@ BOOL TEST_DMA_FIFO(PCIE_HANDLE hPCIe){
 		sprintf(szError, "DMA Fifo: malloc failed\r\n");
 	}
 	
-
-	// init test pattern
-	if (bPass){
-		for(i=0;i<nTestSize;i++)
-			*(pBuff+i) = PAT_GEN(i);
-	}
-
-	// write test pattern into fifo
-	if (bPass){
-		bPass = PCIE_DmaFifoWrite(hPCIe, FifoID_Write, pBuff, nTestSize);
-		if (!bPass)
-			sprintf(szError, "DMA Fifo: PCIE_DmaFifoWrite failed\r\n");
-	}		
-
 	// read back test pattern and verify
 	if (bPass){
 		memset(pBuff, 0, nTestSize); // reset buffer content
@@ -218,9 +204,10 @@ BOOL TEST_DMA_FIFO(PCIE_HANDLE hPCIe){
 			sprintf(szError, "DMA Fifo: PCIE_DmaFifoRead failed\r\n");
 		}else{
 			for(i=0;i<nTestSize && bPass;i++){
-				if (*(pBuff+i) != PAT_GEN(i)){
-					bPass = FALSE;
-					sprintf(szError, "DMA Fifo: Read-back verify unmatch, index = %d, read=%xh, expected=%xh\r\n", i, *(pBuff+i), PAT_GEN(i));
+				// write to file 
+				//if (*(pBuff+i) != PAT_GEN(i)){
+				//	bPass = FALSE;
+				//	sprintf(szError, "DMA Fifo: Read-back verify unmatch, index = %d, read=%xh, expected=%xh\r\n", i, *(pBuff+i), PAT_GEN(i));
 				}
 			}
 		}
@@ -240,7 +227,7 @@ BOOL TEST_DMA_FIFO(PCIE_HANDLE hPCIe){
 	return bPass;
 }
 
-*/
+
 
 int main(void)
 {

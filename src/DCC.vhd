@@ -221,19 +221,89 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
 			sw_external_connection_export                     : in  std_logic_vector(17 downto 0) := (others => 'X'); -- export
-			ledr_external_connection_export                   : out std_logic_vector(17 downto 0)                     -- export
+			ledr_external_connection_export                   : out std_logic_vector(17 downto 0);                     -- export
+			ada_fifo_in_valid                                 : in  std_logic                     := 'X';             -- valid
+			ada_fifo_in_data                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
+			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
+			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
+			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
+			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X'              -- clk
 		);
 	end component DCC_QSYS;
+	
+	component HSMC_DCC IS 
+		PORT (
+			CLK				: IN STD_LOGIC;
+			reset_n			: IN STD_LOGIC;			
+			CLK_25			: OUT STD_LOGIC;
+			-- ADC DATA
+			ADA_DOUT			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
+			ADB_DOUT			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
+			-- DAC DATA
+			DA_DIN			: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+			DB_DIN			: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+			-- TO HSMC CONNECTOR DCC
+			CLKIN1			: IN STD_LOGIC; 					--TP1
+			CLKOUT0			: OUT STD_LOGIC;					--TP2
+			J1_152			: OUT STD_LOGIC;					--TP5
+			-- I2C EEPROM
+			SCL				: OUT STD_LOGIC;					
+			SDA				: INOUT STD_LOGIC;	
+			-- External Clock Source in DCC
+			XT_IN_N			: IN STD_LOGIC;					
+			XT_IN_P			: IN STD_LOGIC;
+			-- Clocks from FPGA
+			FPGA_CLK_A_N	: OUT STD_LOGIC;
+			FPGA_CLK_A_P 	: OUT STD_LOGIC;
+			FPGA_CLK_B_N	: OUT STD_LOGIC;
+			FPGA_CLK_B_P 	: OUT STD_LOGIC;
+			-- ADC A
+			ADA_D				: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+			ADA_OR			: IN STD_LOGIC;					-- Out of range
+			ADA_SPI_CS		: OUT STD_LOGIC;					-- Chip Select = 0
+			ADA_OE			: OUT STD_LOGIC;					-- Enable = 0
+			ADA_DCO			: IN STD_LOGIC;					-- Data clock output
+			-- ADC B
+			ADB_D				: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+			ADB_OR			: IN STD_LOGIC;					-- Out of range
+			ADB_SPI_CS		: OUT STD_LOGIC;              -- Chip Select = 0
+			ADB_OE			: OUT STD_LOGIC;              -- Enable = 0
+			ADB_DCO			: IN STD_LOGIC;               -- Data clock output
+			-- DACs
+			DA					: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
+			DB					: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
+			-- Audio CODEC
+			AIC_XCLK			: IN STD_LOGIC;					-- Crystal or external-clock input
+			AIC_LRCOUT		: INOUT STD_LOGIC;				-- I2S ADC-word clock signal
+			AIC_LRCIN		: INOUT STD_LOGIC;				-- I2S DAC-word clock signal.
+			AIC_DIN			: OUT STD_LOGIC;					-- I2S format serial data input to the sigma delta stereo DAC
+			AIC_DOUT			: IN STD_LOGIC;					-- Output
+			AD_SCLK			: OUT STD_LOGIC;					-- SPI
+			AD_SDIO			: INOUT STD_LOGIC;				-- SPI
+			AIC_SPI_CS		: OUT STD_LOGIC;					-- Chip Select = 0  (low active)
+			AIC_BCLK			: INOUT STD_LOGIC					-- I2S serial-bit clock.
+			);
+		END component HSMC_DCC;
 
 ---------------------------------------------------------------
 -- SIGNALS
 ---------------------------------------------------------------
 
-	signal reset_n		: STD_LOGIC := '0';
+	signal reset_n							: STD_LOGIC := '0';
+	signal sada_fifo_clk_in_clk		: STD_LOGIC := '0';
+	signal sada_fifo_in_data			: STD_LOGIC_VECTOR(31 downto 0) := (OTHERS => '0');
 	
 BEGIN
-	
+
+---------------------------------------------------------------
+-- GENERAL SIGNALS
+---------------------------------------------------------------	
+
 	reset_n <= '1';
+
+---------------------------------------------------------------
+-- PCIe - QSYS
+---------------------------------------------------------------
 
 	DCC_QSYS_INST : component DCC_QSYS
 		port map (
@@ -244,9 +314,71 @@ BEGIN
 			pcie_hard_ip_0_rx_in_rx_datain_0                  => PCIE_RX_P(0),				-- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => PCIE_TX_P(0),				-- tx_dataout_0
 			sw_external_connection_export                     => SW,								-- export
-			ledr_external_connection_export                   => LEDR							-- export
+			ledr_external_connection_export                   => LEDR,							-- export
+			ada_fifo_in_valid                                 => sada_fifo_clk_in_clk,                                 --                       ada_fifo_in.valid
+			ada_fifo_in_data                                  => sada_fifo_in_data,                                  --                                  .data
+			ada_fifo_in_channel                               => '0',                               --                                  .channel
+			ada_fifo_in_error                                 => '0',                                 --                                  .error
+			ada_fifo_in_ready                                 => open,                                 --                                  .ready
+			ada_fifo_clk_in_clk                               => sada_fifo_clk_in_clk                                --                   ada_fifo_clk_in.clk
 		);
-
-
+	
+	PCIE_WAKE_N <= '1';
+	
+---------------------------------------------------------------
+-- HSMC
+---------------------------------------------------------------
+	HSMC_DCC_INST : component HSMC_DCC
+		PORT MAP(
+			CLK					=> CLOCK_50,
+			reset_n				=> reset_n,
+			CLK_25				=> sada_fifo_clk_in_clk,
+			-- ADC DATA
+			ADA_DOUT				=> sada_fifo_in_data(13 downto 0),
+			ADB_DOUT				=> open,
+			-- DAC DATA
+			DA_DIN				=> (OTHERS => '0'),			--ZEROS
+			DB_DIN				=> (OTHERS => '0'),			--ZEROS
+			-- TO HSMC CONNECTOR DCC
+			CLKIN1				=> HSMC_CLKIN1,								--TP1
+			CLKOUT0				=> HSMC_CLKOUT0,								--TP2
+			J1_152				=> HSMC_J1_152,								--TP5
+			-- I2C EEPROM	      
+			SCL					=> HSMC_SCL,									
+			SDA					=> HSMC_SDA,				
+										
+			XT_IN_N				=> HSMC_XT_IN_N,		
+			XT_IN_P				=> HSMC_XT_IN_P,		
+										
+			FPGA_CLK_A_N		=> HSMC_FPGA_CLK_A_N,	
+			FPGA_CLK_A_P 		=> HSMC_FPGA_CLK_A_P, 
+			FPGA_CLK_B_N		=> HSMC_FPGA_CLK_B_N,	
+			FPGA_CLK_B_P 		=> HSMC_FPGA_CLK_B_P, 
+										
+			ADA_D					=> HSMC_ADA_D,			
+			ADA_OR				=> HSMC_ADA_OR,			-- Out of range
+			ADA_SPI_CS			=> HSMC_ADA_SPI_CS,	-- Chip Select = 0
+			ADA_OE				=> HSMC_ADA_OE,			-- Enable = 0
+			ADA_DCO				=> HSMC_ADA_DCO,		-- Data clock output
+										
+			ADB_D					=> HSMC_ADB_D,			
+			ADB_OR				=> HSMC_ADB_OR,			-- Out of range
+			ADB_SPI_CS			=> HSMC_ADB_SPI_CS,	-- Chip Select = 0
+			ADB_OE				=> HSMC_ADB_OE,			-- Enable = 0
+			ADB_DCO				=> HSMC_ADB_DCO,		-- Data clock output
+										
+			DA						=> HSMC_DA,				
+			DB						=> HSMC_DB,				
+			-- Audio CODEC	      
+			AIC_XCLK				=> HSMC_AIC_XCLK,		-- Crystal or external-clock input
+			AIC_LRCOUT			=> HSMC_AIC_LRCOUT,	-- I2S ADC-word clock signal
+			AIC_LRCIN			=> HSMC_AIC_LRCIN,		-- I2S DAC-word clock signal.
+			AIC_DIN				=> HSMC_AIC_DIN,		-- I2S format serial data input to the sigma delta stereo DAC
+			AIC_DOUT				=> HSMC_AIC_DOUT,		-- Output
+			AD_SCLK				=> HSMC_AD_SCLK,		-- SPI
+			AD_SDIO				=> HSMC_AD_SDIO,		-- SPI
+			AIC_SPI_CS			=> HSMC_AIC_SPI_CS,	-- Chip Select = 0  (low active)
+			AIC_BCLK				=> HSMC_AIC_BCLK		-- I2S serial-bit clock.
+			);
 
 END DCC_ARCH;

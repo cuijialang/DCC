@@ -790,7 +790,9 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DRAM_ADDR[12]
 set_instance_assignment -name VIRTUAL_PIN ON -to FS_ADDR[0]
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VHDL_FILE src/HSMC_DCC.vhd
 set_global_assignment -name QSYS_FILE DCC_QSYS.qsys
 set_global_assignment -name VHDL_FILE src/DCC.vhd
 set_global_assignment -name SDC_FILE DCC.sdc
+set_global_assignment -name QIP_FILE src/IP/HSMC_DCC_CLK.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
