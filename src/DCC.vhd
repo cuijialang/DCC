@@ -211,31 +211,24 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 ---------------------------------------------------------------
 -- COMPONENTS 
 ---------------------------------------------------------------
-
-	component DCC_QSYS is
-		port (
-			clk_clk                                           : in  std_logic                     := 'X';             -- clk
-			reset_reset_n                                     : in  std_logic                     := 'X';             -- reset_n
-			pcie_hard_ip_0_refclk_export                      : in  std_logic                     := 'X';             -- export
-			pcie_hard_ip_0_pcie_rstn_export                   : in  std_logic                     := 'X';             -- export
-			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
-			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
-			sw_external_connection_export                     : in  std_logic_vector(17 downto 0) := (others => 'X'); -- export
-			ledr_external_connection_export                   : out std_logic_vector(17 downto 0);                     -- export
-			ada_fifo_in_valid                                 : in  std_logic                     := 'X';             -- valid
-			ada_fifo_in_data                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
-			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
-			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
-			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
-			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X'              -- clk
+	component HSMC_DCC_CLK
+		PORT
+		(
+			areset		: IN STD_LOGIC  := '0';
+			inclk0		: IN STD_LOGIC  := '0';
+			c0		: OUT STD_LOGIC ;
+			c1		: OUT STD_LOGIC ;
+			c2		: OUT STD_LOGIC ;
+			c3		: OUT STD_LOGIC 
 		);
-	end component DCC_QSYS;
+	end component;
 	
 	component HSMC_DCC IS 
 		PORT (
 			CLK				: IN STD_LOGIC;
-			reset_n			: IN STD_LOGIC;			
-			CLK_25			: OUT STD_LOGIC;
+			CLK_180			: IN STD_LOGIC;
+			CLK_270			: IN STD_LOGIC;
+			reset_n			: IN STD_LOGIC;
 			-- ADC DATA
 			ADA_DOUT			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
 			ADB_DOUT			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
@@ -284,14 +277,51 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			AIC_BCLK			: INOUT STD_LOGIC					-- I2S serial-bit clock.
 			);
 		END component HSMC_DCC;
+		
+	component DCC_QSYS is
+		port (
+			clk_clk                                           : in  std_logic                     := 'X';             -- clk
+			reset_reset_n                                     : in  std_logic                     := 'X';             -- reset_n
+			pcie_hard_ip_0_refclk_export                      : in  std_logic                     := 'X';             -- export
+			pcie_hard_ip_0_pcie_rstn_export                   : in  std_logic                     := 'X';             -- export
+			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
+			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
+			sw_external_connection_export                     : in  std_logic_vector(17 downto 0) := (others => 'X'); -- export
+			ledr_external_connection_export                   : out std_logic_vector(17 downto 0);                     -- export
+			ada_fifo_in_valid                                 : in  std_logic                     := 'X';             -- valid
+			ada_fifo_in_data                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
+			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
+			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
+			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
+			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X';             -- clk
+			ada_fifo_reset_reset                              : in  std_logic                     := 'X'              -- reset
+		);
+	end component DCC_QSYS;
+	
+	component TEST_COUNTER IS 
+	PORT (	
+				clk															: in std_logic;
+				reset_n															: in std_logic;
+				ada_fifo_in_valid                                 : out  std_logic                     := 'X';             -- valid
+				ada_fifo_in_data                                  : out  std_logic_vector(31 downto 0) := (others => 'X'); -- data
+				ada_fifo_in_ready                                 : in std_logic                                        -- ready
+	);
+	END component TEST_COUNTER;
 
 ---------------------------------------------------------------
 -- SIGNALS
 ---------------------------------------------------------------
-
+	SIGNAL sCLK25_0				:  STD_LOGIC := '0';
+	SIGNAL sCLK25_180			:  STD_LOGIC := '0';
+	SIGNAL sCLK25_270			:  STD_LOGIC := '0';
+	
 	signal reset_n							: STD_LOGIC := '0';
-	signal sada_fifo_clk_in_clk		: STD_LOGIC := '0';
-	signal sada_fifo_in_data			: STD_LOGIC_VECTOR(31 downto 0) := (OTHERS => '0');
+	signal reset							: STD_LOGIC := '0';
+	
+	signal sValid			: STD_LOGIC := '0';
+	signal sData			: STD_LOGIC_VECTOR(31 downto 0) := (OTHERS => '0');
+	signal sReady			: STD_LOGIC := '0';
+	
 	
 BEGIN
 
@@ -299,7 +329,21 @@ BEGIN
 -- GENERAL SIGNALS
 ---------------------------------------------------------------	
 
-	reset_n <= '1';
+	reset_n 	<= '1';
+	reset		<= '0';
+
+---------------------------------------------------------------
+-- CLOCKS
+---------------------------------------------------------------	
+
+	HSMC_DCC_CLK_inst : HSMC_DCC_CLK PORT MAP (
+		areset	 => reset,
+		inclk0	 => CLOCK_50,
+		c0	 => sCLK25_0,						-- 0 
+		c1	 => OPEN,						-- 90
+		c2	 => sCLK25_180, 					-- 180
+		c3	 => sCLK25_270					-- 270
+	);
 
 ---------------------------------------------------------------
 -- PCIe - QSYS
@@ -315,12 +359,14 @@ BEGIN
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => PCIE_TX_P(0),				-- tx_dataout_0
 			sw_external_connection_export                     => SW,								-- export
 			ledr_external_connection_export                   => LEDR,							-- export
-			ada_fifo_in_valid                                 => sada_fifo_clk_in_clk,                                 --                       ada_fifo_in.valid
-			ada_fifo_in_data                                  => sada_fifo_in_data,                                  --                                  .data
+			ada_fifo_in_valid                                 => sValid,                     --                       ada_fifo_in.valid
+			ada_fifo_in_data                                  => sData,                                  --                                  .data
 			ada_fifo_in_channel                               => '0',                               --                                  .channel
 			ada_fifo_in_error                                 => '0',                                 --                                  .error
-			ada_fifo_in_ready                                 => open,                                 --                                  .ready
-			ada_fifo_clk_in_clk                               => sada_fifo_clk_in_clk                                --                   ada_fifo_clk_in.clk
+			ada_fifo_in_ready                                 => sReady,                                 --                                  .ready
+			ada_fifo_clk_in_clk                               => sCLK25_0,                    --                   ada_fifo_clk_in.clk
+			ada_fifo_reset_reset                              => reset                               --                    ada_fifo_reset.reset
+			
 		);
 	
 	PCIE_WAKE_N <= '1';
@@ -331,10 +377,11 @@ BEGIN
 	HSMC_DCC_INST : component HSMC_DCC
 		PORT MAP(
 			CLK					=> CLOCK_50,
+			CLK_180				=> sCLK25_180,
+			CLK_270				=> sCLK25_270,
 			reset_n				=> reset_n,
-			CLK_25				=> sada_fifo_clk_in_clk,
 			-- ADC DATA
-			ADA_DOUT				=> sada_fifo_in_data(13 downto 0),
+			ADA_DOUT				=> open,
 			ADB_DOUT				=> open,
 			-- DAC DATA
 			DA_DIN				=> (OTHERS => '0'),			--ZEROS
@@ -380,5 +427,14 @@ BEGIN
 			AIC_SPI_CS			=> HSMC_AIC_SPI_CS,	-- Chip Select = 0  (low active)
 			AIC_BCLK				=> HSMC_AIC_BCLK		-- I2S serial-bit clock.
 			);
+			
+	TEST_COUNTER_INST : TEST_COUNTER
+	PORT MAP(	
+				clk						=> sCLK25_0,									 
+				reset_n					=> KEY(3), 								
+				ada_fifo_in_valid    => sValid,                           -- valid
+				ada_fifo_in_data     => sData,                       -- data
+				ada_fifo_in_ready    => sReady                         -- ready
+	);
 
 END DCC_ARCH;

@@ -16,8 +16,9 @@ USE IEEE.NUMERIC_STD.ALL;
 ENTITY HSMC_DCC IS 
 PORT (
 	CLK				: IN STD_LOGIC;
+	CLK_180			: IN STD_LOGIC;
+	CLK_270			: IN STD_LOGIC;
 	reset_n			: IN STD_LOGIC;
-	CLK_25			: OUT STD_LOGIC;
 	-- ADC DATA
 	ADA_DOUT			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
 	ADB_DOUT			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
@@ -69,27 +70,9 @@ END HSMC_DCC;
 
 ARCHITECTURE HSMC_DCC_ARCH OF HSMC_DCC IS 
 
-	component HSMC_DCC_CLK
-		PORT
-		(
-			areset		: IN STD_LOGIC  := '0';
-			inclk0		: IN STD_LOGIC  := '0';
-			c0		: OUT STD_LOGIC ;
-			c1		: OUT STD_LOGIC ;
-			c2		: OUT STD_LOGIC ;
-			c3		: OUT STD_LOGIC 
-		);
-	end component;
-
 	SIGNAL sADA_DOUT : STD_LOGIC_VECTOR (13 DOWNTO 0) := (OTHERS => '0');
 	SIGNAL sADB_DOUT : STD_LOGIC_VECTOR (13 DOWNTO 0) := (OTHERS => '0');
-	
-	SIGNAL sareset				:  STD_LOGIC := '0';
-	
-	SIGNAL sCLK_0				:  STD_LOGIC := '0';
-	SIGNAL sCLK_180			:  STD_LOGIC := '0';
-	SIGNAL sCLK_270			:  STD_LOGIC := '0';
-	
+		
 BEGIN 
 
 	------------------------------------------------------------------------
@@ -116,11 +99,11 @@ BEGIN
 		END IF;
 	END PROCESS ADA_PINS;
 	
-	ADA_SYNC : PROCESS (reset_n, sCLK_0) IS
+	ADA_SYNC : PROCESS (reset_n, CLK) IS
 	BEGIN 
 		IF reset_n = '0' THEN
 			ADA_DOUT <= (OTHERS => '0');
-		ELSIF RISING_EDGE(sCLK_0) THEN
+		ELSIF RISING_EDGE(CLK) THEN
 			ADA_DOUT <= sADA_DOUT;
 		END IF;
 	END PROCESS ADA_SYNC;
@@ -140,11 +123,11 @@ BEGIN
 		END IF;
 	END PROCESS ADB_PINS;
 	
-	ADB_SYNC : PROCESS (reset_n, sCLK_0) IS
+	ADB_SYNC : PROCESS (reset_n, CLK) IS
 	BEGIN 
 		IF reset_n = '0' THEN
 			ADB_DOUT <= (OTHERS => '0');
-		ELSIF RISING_EDGE(sCLK_0) THEN
+		ELSIF RISING_EDGE(CLK) THEN
 			ADB_DOUT <= sADB_DOUT;
 		END IF;
 	END PROCESS ADB_SYNC;
@@ -156,26 +139,15 @@ BEGIN
 	
 	------------------------------------------------------------------------
 	-- CLOCKS
-	sareset <= not reset_n;
 	
-	HSMC_DCC_CLK_inst : HSMC_DCC_CLK PORT MAP (
-		areset	 => sareset,
-		inclk0	 => CLK,
-		c0	 => sCLK_0,						-- 0 
-		c1	 => OPEN,						-- 90
-		c2	 => sCLK_180, 					-- 180
-		c3	 => sCLK_270					-- 270
-	);
-	
-	FPGA_CLK_A_P	<= sCLK_180;
-	FPGA_CLK_A_N	<= not sCLK_180;
-	FPGA_CLK_B_P	<= sCLK_270;
-	FPGA_CLK_B_N	<= not sCLK_270;
-	CLK_25			<= sCLK_0;
+	FPGA_CLK_A_P	<= CLK_180;
+	FPGA_CLK_A_N	<= not CLK_180;
+	FPGA_CLK_B_P	<= CLK_270;
+	FPGA_CLK_B_N	<= not CLK_270;
 	
 	------------------------------------------------------------------------
 	-- Test Points
-	CLKOUT0 <= sCLK_180; 					-- Test Point 2
+	CLKOUT0 <= CLK_180; 					-- Test Point 2
 	J1_152 <= '1';							-- Test Point 5
 	
 	------------------------------------------------------------------------

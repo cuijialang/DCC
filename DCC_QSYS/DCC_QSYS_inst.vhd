@@ -35,7 +35,8 @@
 			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
 			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
 			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
-			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X'              -- clk
+			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X';             -- clk
+			ada_fifo_reset_reset                              : in  std_logic                     := 'X'              -- reset
 		);
 	end component DCC_QSYS;
 
@@ -76,6 +77,7 @@
 			ada_fifo_in_channel                               => CONNECTED_TO_ada_fifo_in_channel,                               --                                  .channel
 			ada_fifo_in_error                                 => CONNECTED_TO_ada_fifo_in_error,                                 --                                  .error
 			ada_fifo_in_ready                                 => CONNECTED_TO_ada_fifo_in_ready,                                 --                                  .ready
-			ada_fifo_clk_in_clk                               => CONNECTED_TO_ada_fifo_clk_in_clk                                --                   ada_fifo_clk_in.clk
+			ada_fifo_clk_in_clk                               => CONNECTED_TO_ada_fifo_clk_in_clk,                               --                   ada_fifo_clk_in.clk
+			ada_fifo_reset_reset                              => CONNECTED_TO_ada_fifo_reset_reset                               --                    ada_fifo_reset.reset
 		);
 

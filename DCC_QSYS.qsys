@@ -73,12 +73,36 @@
          type = "String";
       }
    }
+   element ada_fifo.out_csr
+   {
+      datum baseAddress
+      {
+         value = "96";
+         type = "String";
+      }
+   }
    element pcie_hard_ip_0
    {
       datum _sortIndex
       {
          value = "2";
          type = "int";
+      }
+   }
+   element reset_bridge_0
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element ledr.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
       }
    }
    element sw.s1
@@ -92,14 +116,6 @@
       {
          value = "160";
          type = "String";
-      }
-   }
-   element ledr.s1
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
       }
    }
    element sgdma_0
@@ -217,6 +233,11 @@
    name="ada_fifo_clk_in"
    internal="clock_bridge_0.in_clk"
    type="clock"
+   dir="end" />
+ <interface
+   name="ada_fifo_reset"
+   internal="reset_bridge_0.in_reset"
+   type="reset"
    dir="end" />
  <module kind="clock_source" version="14.0" enabled="1" name="clk_50">
   <parameter name="clockFrequency" value="50000000" />
@@ -344,8 +365,8 @@
   <parameter name="SLAVE_ADDRESS_MAP_5_4" value="0" />
   <parameter name="deviceFamily" value="Cyclone IV GX" />
   <parameter name="AUTO_CAL_BLK_CLK_CLOCK_RATE" value="50000000" />
-  <parameter name="AUTO_CAL_BLK_CLK_CLOCK_DOMAIN" value="2" />
-  <parameter name="AUTO_CAL_BLK_CLK_RESET_DOMAIN" value="2" />
+  <parameter name="AUTO_CAL_BLK_CLK_CLOCK_DOMAIN" value="3" />
+  <parameter name="AUTO_CAL_BLK_CLK_RESET_DOMAIN" value="3" />
   <parameter name="AUTO_DEVICE" value="EP4CGX150DF31C7" />
  </module>
  <module kind="altera_avalon_sgdma" version="14.0" enabled="1" name="sgdma_0">
@@ -357,7 +378,7 @@
   <parameter name="enableDescriptorReadMasterBurst" value="false" />
   <parameter name="enableUnalignedTransfers" value="false" />
   <parameter name="internalFIFODepth" value="2" />
-  <parameter name="readBlockDataWidth" value="64" />
+  <parameter name="readBlockDataWidth" value="32" />
   <parameter name="readBurstcountWidth" value="4" />
   <parameter name="sinkErrorWidth" value="0" />
   <parameter name="sourceErrorWidth" value="0" />
@@ -409,7 +430,7 @@
   <parameter name="useBackpressure" value="true" />
   <parameter name="useIRQ" value="true" />
   <parameter name="usePacket" value="false" />
-  <parameter name="useReadControl" value="false" />
+  <parameter name="useReadControl" value="true" />
   <parameter name="useRegister" value="false" />
   <parameter name="useWriteControl" value="false" />
   <parameter name="deviceFamilyString" value="Cyclone IV GX" />
@@ -420,8 +441,18 @@
    enabled="1"
    name="clock_bridge_0">
   <parameter name="DERIVED_CLOCK_RATE" value="0" />
-  <parameter name="EXPLICIT_CLOCK_RATE" value="0" />
+  <parameter name="EXPLICIT_CLOCK_RATE" value="25000000" />
   <parameter name="NUM_CLOCK_OUTPUTS" value="1" />
+ </module>
+ <module
+   kind="altera_reset_bridge"
+   version="14.0"
+   enabled="1"
+   name="reset_bridge_0">
+  <parameter name="ACTIVE_LOW_RESET" value="0" />
+  <parameter name="SYNCHRONOUS_EDGES" value="deassert" />
+  <parameter name="NUM_RESET_OUTPUTS" value="1" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="25000000" />
  </module>
  <connection
    kind="clock"
@@ -567,16 +598,6 @@
  <connection
    kind="reset"
    version="14.0"
-   start="clk_50.clk_reset"
-   end="ada_fifo.reset_in" />
- <connection
-   kind="reset"
-   version="14.0"
-   start="pcie_hard_ip_0.pcie_core_reset"
-   end="ada_fifo.reset_in" />
- <connection
-   kind="reset"
-   version="14.0"
    start="pcie_hard_ip_0.pcie_core_reset"
    end="ada_fifo.reset_out" />
  <connection
@@ -593,7 +614,41 @@
    version="14.0"
    start="clock_bridge_0.out_clk"
    end="ada_fifo.clk_in" />
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="pcie_hard_ip_0.bar1_0"
+   end="ada_fifo.out">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0080" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="pcie_hard_ip_0.bar1_0"
+   end="ada_fifo.out_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0060" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="interrupt"
+   version="14.0"
+   start="pcie_hard_ip_0.rxm_irq"
+   end="ada_fifo.out_irq">
+  <parameter name="irqNumber" value="1" />
+ </connection>
+ <connection
+   kind="reset"
+   version="14.0"
+   start="reset_bridge_0.out_reset"
+   end="ada_fifo.reset_in" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="clock_bridge_0.out_clk"
+   end="reset_bridge_0.clk" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
- <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
 </system>
