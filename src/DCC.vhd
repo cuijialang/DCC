@@ -223,6 +223,20 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 		);
 	end component;
 	
+	component HEX_MODULE IS
+	PORT (
+		HDIG			: IN 	STD_LOGIC_VECTOR (31 DOWNTO 0);		
+		HEX_0			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_1			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_2			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_3			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_4			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_5			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_6			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
+		HEX_7			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
+		);
+END component HEX_MODULE;
+	
 	component HSMC_DCC IS 
 		PORT (
 			CLK				: IN STD_LOGIC;
@@ -357,6 +371,22 @@ BEGIN
 		c2	 => sCLK25_180, 					-- 180
 		c3	 => sCLK25_270					-- 270
 	);
+	
+---------------------------------------------------------------
+-- VERSION - DATE
+---------------------------------------------------------------		
+	HEX_MODULE_INST : HEX_MODULE
+		PORT MAP(
+			HDIG		=> x"13012015",		
+			HEX_0		=> HEX0,	
+			HEX_1		=> HEX1,	
+			HEX_2		=> HEX2,	
+			HEX_3		=> HEX3,	
+			HEX_4		=> HEX4,	
+			HEX_5		=> HEX5,	
+			HEX_6		=> HEX6,	
+			HEX_7		=> HEX7	
+			);
 
 ---------------------------------------------------------------
 -- PCIe - QSYS

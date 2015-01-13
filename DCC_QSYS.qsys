@@ -134,14 +134,6 @@
          type = "int";
       }
    }
-   element ledr.s1
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-   }
    element sw.s1
    {
       datum _lockedAddress
@@ -153,6 +145,14 @@
       {
          value = "160";
          type = "String";
+      }
+   }
+   element ledr.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
       }
    }
    element sgdma_0
@@ -801,6 +801,24 @@
    version="14.0"
    start="fir_reset_bridge.out_reset"
    end="fir.rst" />
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="sgdma_0.m_read"
+   end="fir.avalon_mm_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="sgdma_0.m_write"
+   end="fir.avalon_mm_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

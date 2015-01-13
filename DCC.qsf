@@ -790,15 +790,8 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to DRAM_ADDR[12]
 set_instance_assignment -name VIRTUAL_PIN ON -to FS_ADDR[0]
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name VHDL_FILE src/HSMC_DCC.vhd
-set_global_assignment -name QSYS_FILE DCC_QSYS.qsys
-set_global_assignment -name VHDL_FILE src/DCC.vhd
-set_global_assignment -name SDC_FILE DCC.sdc
-set_global_assignment -name QIP_FILE src/IP/HSMC_DCC_CLK.qip
-set_global_assignment -name VHDL_FILE src/TEST_COUNTER.vhd
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id auto_signaltap_0
@@ -1114,5 +1107,14 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "DCC_QSYS:DCC_QSYS_INST|DCC_QSYS_ada_fifo:ada_fifo|DCC_QSYS_ada_fifo_dual_clock_fifo_for_other_info:the_dcfifo_other_info|rdclk" -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name VHDL_FILE src/HEX_MODULE.vhd
+set_global_assignment -name VHDL_FILE src/HDIG_HEX.vhd
+set_global_assignment -name VHDL_FILE src/HSMC_DCC.vhd
+set_global_assignment -name QSYS_FILE DCC_QSYS.qsys
+set_global_assignment -name VHDL_FILE src/DCC.vhd
+set_global_assignment -name SDC_FILE DCC.sdc
+set_global_assignment -name QIP_FILE src/IP/HSMC_DCC_CLK.qip
+set_global_assignment -name VHDL_FILE src/TEST_COUNTER.vhd
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
