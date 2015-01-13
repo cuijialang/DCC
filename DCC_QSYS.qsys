@@ -12,6 +12,22 @@
    element $${FILENAME}
    {
    }
+   element ada__reset_bridge
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element ada_clock_bridge
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
    element ada_fifo
    {
       datum _sortIndex
@@ -20,19 +36,19 @@
          type = "int";
       }
    }
+   element fir.avalon_mm_slave
+   {
+      datum baseAddress
+      {
+         value = "8192";
+         type = "String";
+      }
+   }
    element clk_50
    {
       datum _sortIndex
       {
          value = "1";
-         type = "int";
-      }
-   }
-   element clock_bridge_0
-   {
-      datum _sortIndex
-      {
-         value = "6";
          type = "int";
       }
    }
@@ -55,6 +71,35 @@
       {
          value = "16448";
          type = "String";
+      }
+   }
+   element fir
+   {
+      datum _sortIndex
+      {
+         value = "8";
+         type = "int";
+      }
+      datum megawizard_uipreferences
+      {
+         value = "{}";
+         type = "String";
+      }
+   }
+   element fir_clock_bridge
+   {
+      datum _sortIndex
+      {
+         value = "9";
+         type = "int";
+      }
+   }
+   element fir_reset_bridge
+   {
+      datum _sortIndex
+      {
+         value = "10";
+         type = "int";
       }
    }
    element ledr
@@ -86,14 +131,6 @@
       datum _sortIndex
       {
          value = "2";
-         type = "int";
-      }
-   }
-   element reset_bridge_0
-   {
-      datum _sortIndex
-      {
-         value = "7";
          type = "int";
       }
    }
@@ -231,12 +268,32 @@
    dir="end" />
  <interface
    name="ada_fifo_clk_in"
-   internal="clock_bridge_0.in_clk"
+   internal="ada_clock_bridge.in_clk"
    type="clock"
    dir="end" />
  <interface
    name="ada_fifo_reset"
-   internal="reset_bridge_0.in_reset"
+   internal="ada__reset_bridge.in_reset"
+   type="reset"
+   dir="end" />
+ <interface
+   name="fir_avalon_streaming_sink"
+   internal="fir.avalon_streaming_sink"
+   type="avalon_streaming"
+   dir="end" />
+ <interface
+   name="fir_avalon_streaming_source"
+   internal="fir.avalon_streaming_source"
+   type="avalon_streaming"
+   dir="start" />
+ <interface
+   name="fir_clk_in"
+   internal="fir_clock_bridge.in_clk"
+   type="clock"
+   dir="end" />
+ <interface
+   name="fir_reset"
+   internal="fir_reset_bridge.in_reset"
    type="reset"
    dir="end" />
  <module kind="clock_source" version="14.0" enabled="1" name="clk_50">
@@ -360,7 +417,7 @@
   <parameter name="SLAVE_ADDRESS_MAP_3" value="0" />
   <parameter name="SLAVE_ADDRESS_MAP_4" value="0" />
   <parameter name="SLAVE_ADDRESS_MAP_5" value="0" />
-  <parameter name="SLAVE_ADDRESS_MAP_1_0" value="8" />
+  <parameter name="SLAVE_ADDRESS_MAP_1_0" value="14" />
   <parameter name="SLAVE_ADDRESS_MAP_3_2" value="0" />
   <parameter name="SLAVE_ADDRESS_MAP_5_4" value="0" />
   <parameter name="deviceFamily" value="Cyclone IV GX" />
@@ -439,7 +496,7 @@
    kind="altera_clock_bridge"
    version="14.0"
    enabled="1"
-   name="clock_bridge_0">
+   name="ada_clock_bridge">
   <parameter name="DERIVED_CLOCK_RATE" value="0" />
   <parameter name="EXPLICIT_CLOCK_RATE" value="25000000" />
   <parameter name="NUM_CLOCK_OUTPUTS" value="1" />
@@ -448,11 +505,67 @@
    kind="altera_reset_bridge"
    version="14.0"
    enabled="1"
-   name="reset_bridge_0">
-  <parameter name="ACTIVE_LOW_RESET" value="0" />
+   name="ada__reset_bridge">
+  <parameter name="ACTIVE_LOW_RESET" value="1" />
   <parameter name="SYNCHRONOUS_EDGES" value="deassert" />
   <parameter name="NUM_RESET_OUTPUTS" value="1" />
   <parameter name="AUTO_CLK_CLOCK_RATE" value="25000000" />
+ </module>
+ <module kind="altera_fir_compiler_ii" version="14.0" enabled="1" name="fir">
+  <parameter name="deviceFamily" value="Cyclone IV GX" />
+  <parameter name="filterType" value="Single Rate" />
+  <parameter name="interpFactor" value="1" />
+  <parameter name="decimFactor" value="1" />
+  <parameter name="L_bandsFilter" value="All taps" />
+  <parameter name="clockRate" value="50" />
+  <parameter name="clockSlack" value="0" />
+  <parameter name="speedGrade" value="Medium" />
+  <parameter name="coeffReload" value="true" />
+  <parameter name="baseAddress" value="0" />
+  <parameter name="readWriteMode" value="Read/Write" />
+  <parameter name="backPressure" value="false" />
+  <parameter name="symmetryMode" value="Non Symmetry" />
+  <parameter name="delayRAMBlockThreshold" value="20" />
+  <parameter name="dualMemDistRAMThreshold" value="1280" />
+  <parameter name="mRAMThreshold" value="1000000" />
+  <parameter name="hardMultiplierThreshold" value="-1" />
+  <parameter name="inputRate" value="50" />
+  <parameter name="inputChannelNum" value="1" />
+  <parameter name="inputType" value="Signed Binary" />
+  <parameter name="inputBitWidth" value="15" />
+  <parameter name="inputFracBitWidth" value="0" />
+  <parameter name="coeffSetRealValue">0.0176663,0.013227,0.0,-0.0149911,-0.0227152,-0.0172976,0.0,0.0204448,0.0318046,0.0249882,0.0,-0.0321283,-0.0530093,-0.04498,0.0,0.0749693,0.159034,0.224907,0.249809,0.224907,0.159034,0.0749693,0.0,-0.04498,-0.0530093,-0.0321283,0.0,0.0249882,0.0318046,0.0204448,0.0,-0.0172976,-0.0227152,-0.0149911,0.0,0.013227,0.0176663</parameter>
+  <parameter name="coeffType" value="Signed Binary" />
+  <parameter name="coeffScaling" value="Auto" />
+  <parameter name="coeffBitWidth" value="8" />
+  <parameter name="coeffFracBitWidth" value="0" />
+  <parameter name="outType" value="Signed Binary" />
+  <parameter name="outMSBRound" value="Truncation" />
+  <parameter name="outMsbBitRem" value="0" />
+  <parameter name="outLSBRound" value="Truncation" />
+  <parameter name="outLsbBitRem" value="0" />
+  <parameter name="resoureEstimation" value="1000,1200,10" />
+  <parameter name="bankCount" value="1" />
+  <parameter name="bankDisplay" value="0" />
+ </module>
+ <module
+   kind="altera_clock_bridge"
+   version="14.0"
+   enabled="1"
+   name="fir_clock_bridge">
+  <parameter name="DERIVED_CLOCK_RATE" value="0" />
+  <parameter name="EXPLICIT_CLOCK_RATE" value="50000000" />
+  <parameter name="NUM_CLOCK_OUTPUTS" value="1" />
+ </module>
+ <module
+   kind="altera_reset_bridge"
+   version="14.0"
+   enabled="1"
+   name="fir_reset_bridge">
+  <parameter name="ACTIVE_LOW_RESET" value="1" />
+  <parameter name="SYNCHRONOUS_EDGES" value="deassert" />
+  <parameter name="NUM_RESET_OUTPUTS" value="1" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
  </module>
  <connection
    kind="clock"
@@ -612,7 +725,7 @@
  <connection
    kind="clock"
    version="14.0"
-   start="clock_bridge_0.out_clk"
+   start="ada_clock_bridge.out_clk"
    end="ada_fifo.clk_in" />
  <connection
    kind="avalon"
@@ -642,13 +755,52 @@
  <connection
    kind="reset"
    version="14.0"
-   start="reset_bridge_0.out_reset"
+   start="ada__reset_bridge.out_reset"
    end="ada_fifo.reset_in" />
  <connection
    kind="clock"
    version="14.0"
-   start="clock_bridge_0.out_clk"
-   end="reset_bridge_0.clk" />
+   start="ada_clock_bridge.out_clk"
+   end="ada__reset_bridge.clk" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="pcie_hard_ip_0.pcie_core_clk"
+   end="fir.coeff_clock" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk_50.clk_reset"
+   end="fir.coeff_reset" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="pcie_hard_ip_0.pcie_core_reset"
+   end="fir.coeff_reset" />
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="pcie_hard_ip_0.bar1_0"
+   end="fir.avalon_mm_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="clock"
+   version="14.0"
+   start="fir_clock_bridge.out_clk"
+   end="fir_reset_bridge.clk" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="fir_clock_bridge.out_clk"
+   end="fir.clk" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="fir_reset_bridge.out_reset"
+   end="fir.rst" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

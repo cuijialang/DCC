@@ -294,7 +294,15 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
 			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
 			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X';             -- clk
-			ada_fifo_reset_reset                              : in  std_logic                     := 'X'              -- reset
+			ada_fifo_reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
+			fir_avalon_streaming_sink_data                    : in  std_logic_vector(14 downto 0) := (others => 'X'); -- data
+			fir_avalon_streaming_sink_valid                   : in  std_logic                     := 'X';             -- valid
+			fir_avalon_streaming_sink_error                   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			fir_avalon_streaming_source_data                  : out std_logic_vector(28 downto 0);                    -- data
+			fir_avalon_streaming_source_valid                 : out std_logic;                                        -- valid
+			fir_avalon_streaming_source_error                 : out std_logic_vector(1 downto 0);                     -- error
+			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
+			fir_reset_reset_n                                 : in  std_logic                     := 'X'              -- reset_n
 		);
 	end component DCC_QSYS;
 	
@@ -322,6 +330,11 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 	signal sData			: STD_LOGIC_VECTOR(31 downto 0) := (OTHERS => '0');
 	signal sReady			: STD_LOGIC := '0';
 	
+	signal sDA_DIN			: std_logic_vector(13 downto 0) := (others => '0');
+	signal sDB_DIN			: std_logic_vector(13 downto 0) := (others => '0');
+	signal sDA_DIN_FIR	: std_logic_vector(28 downto 0) := (others => '0');
+	signal sADA_DOUT		: std_logic_vector(13 downto 0) := (others => '0');
+	signal sADA_DOUT_FIR : std_logic_vector(14 downto 0) := (others => '0');
 	
 BEGIN
 
@@ -348,7 +361,10 @@ BEGIN
 ---------------------------------------------------------------
 -- PCIe - QSYS
 ---------------------------------------------------------------
-
+	sADA_DOUT_FIR <= '0' & sADA_DOUT;
+	sDA_DIN <= sDA_DIN_FIR(27 downto 14);
+	sDB_DIN <= sDA_DIN_FIR(13 downto 0);
+	
 	DCC_QSYS_INST : component DCC_QSYS
 		port map (
 			clk_clk                                           => CLOCK_50,						-- clk
@@ -365,7 +381,15 @@ BEGIN
 			ada_fifo_in_error                                 => '0',                                 --                                  .error
 			ada_fifo_in_ready                                 => sReady,                                 --                                  .ready
 			ada_fifo_clk_in_clk                               => sCLK25_0,                    --                   ada_fifo_clk_in.clk
-			ada_fifo_reset_reset                              => reset                               --                    ada_fifo_reset.reset
+			ada_fifo_reset_reset_n                            => reset_n,                            --                    ada_fifo_reset.reset_n
+			fir_avalon_streaming_sink_data                    => sADA_DOUT_FIR,                    --         fir_avalon_streaming_sink.data
+			fir_avalon_streaming_sink_valid                   => '1',                   --                                  .valid
+			fir_avalon_streaming_sink_error                   => b"00",                   --                                  .error
+			fir_avalon_streaming_source_data                  => sDA_DIN_FIR,                  --       fir_avalon_streaming_source.data
+			fir_avalon_streaming_source_valid                 => open,                 --                                  .valid
+			fir_avalon_streaming_source_error                 => open,                 --                                  .error
+			fir_clk_in_clk                                    => CLOCK_50,                                    --                        fir_clk_in.clk
+			fir_reset_reset_n                                 => reset_n                                  --                         fir_reset.reset_n
 			
 		);
 	
@@ -381,11 +405,11 @@ BEGIN
 			CLK_270				=> sCLK25_270,
 			reset_n				=> reset_n,
 			-- ADC DATA
-			ADA_DOUT				=> open,
+			ADA_DOUT				=> sADA_DOUT,
 			ADB_DOUT				=> open,
 			-- DAC DATA
-			DA_DIN				=> (OTHERS => '0'),			--ZEROS
-			DB_DIN				=> (OTHERS => '0'),			--ZEROS
+			DA_DIN				=> sDA_DIN,
+			DB_DIN				=> sDB_DIN,			
 			-- TO HSMC CONNECTOR DCC
 			CLKIN1				=> HSMC_CLKIN1,								--TP1
 			CLKOUT0				=> HSMC_CLKOUT0,								--TP2

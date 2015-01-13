@@ -36,7 +36,15 @@
 			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
 			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
 			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X';             -- clk
-			ada_fifo_reset_reset                              : in  std_logic                     := 'X'              -- reset
+			ada_fifo_reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
+			fir_avalon_streaming_sink_data                    : in  std_logic_vector(14 downto 0) := (others => 'X'); -- data
+			fir_avalon_streaming_sink_valid                   : in  std_logic                     := 'X';             -- valid
+			fir_avalon_streaming_sink_error                   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			fir_avalon_streaming_source_data                  : out std_logic_vector(28 downto 0);                    -- data
+			fir_avalon_streaming_source_valid                 : out std_logic;                                        -- valid
+			fir_avalon_streaming_source_error                 : out std_logic_vector(1 downto 0);                     -- error
+			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
+			fir_reset_reset_n                                 : in  std_logic                     := 'X'              -- reset_n
 		);
 	end component DCC_QSYS;
 
@@ -78,6 +86,14 @@
 			ada_fifo_in_error                                 => CONNECTED_TO_ada_fifo_in_error,                                 --                                  .error
 			ada_fifo_in_ready                                 => CONNECTED_TO_ada_fifo_in_ready,                                 --                                  .ready
 			ada_fifo_clk_in_clk                               => CONNECTED_TO_ada_fifo_clk_in_clk,                               --                   ada_fifo_clk_in.clk
-			ada_fifo_reset_reset                              => CONNECTED_TO_ada_fifo_reset_reset                               --                    ada_fifo_reset.reset
+			ada_fifo_reset_reset_n                            => CONNECTED_TO_ada_fifo_reset_reset_n,                            --                    ada_fifo_reset.reset_n
+			fir_avalon_streaming_sink_data                    => CONNECTED_TO_fir_avalon_streaming_sink_data,                    --         fir_avalon_streaming_sink.data
+			fir_avalon_streaming_sink_valid                   => CONNECTED_TO_fir_avalon_streaming_sink_valid,                   --                                  .valid
+			fir_avalon_streaming_sink_error                   => CONNECTED_TO_fir_avalon_streaming_sink_error,                   --                                  .error
+			fir_avalon_streaming_source_data                  => CONNECTED_TO_fir_avalon_streaming_source_data,                  --       fir_avalon_streaming_source.data
+			fir_avalon_streaming_source_valid                 => CONNECTED_TO_fir_avalon_streaming_source_valid,                 --                                  .valid
+			fir_avalon_streaming_source_error                 => CONNECTED_TO_fir_avalon_streaming_source_error,                 --                                  .error
+			fir_clk_in_clk                                    => CONNECTED_TO_fir_clk_in_clk,                                    --                        fir_clk_in.clk
+			fir_reset_reset_n                                 => CONNECTED_TO_fir_reset_reset_n                                  --                         fir_reset.reset_n
 		);
 
