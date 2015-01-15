@@ -40,11 +40,11 @@
 			fir_avalon_streaming_sink_data                    : in  std_logic_vector(14 downto 0) := (others => 'X'); -- data
 			fir_avalon_streaming_sink_valid                   : in  std_logic                     := 'X';             -- valid
 			fir_avalon_streaming_sink_error                   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
+			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
+			fir_reset_reset_n                                 : in  std_logic                     := 'X';             -- reset_n
 			fir_avalon_streaming_source_data                  : out std_logic_vector(28 downto 0);                    -- data
 			fir_avalon_streaming_source_valid                 : out std_logic;                                        -- valid
-			fir_avalon_streaming_source_error                 : out std_logic_vector(1 downto 0);                     -- error
-			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
-			fir_reset_reset_n                                 : in  std_logic                     := 'X'              -- reset_n
+			fir_avalon_streaming_source_error                 : out std_logic_vector(1 downto 0)                      -- error
 		);
 	end component DCC_QSYS;
 
@@ -90,10 +90,10 @@
 			fir_avalon_streaming_sink_data                    => CONNECTED_TO_fir_avalon_streaming_sink_data,                    --         fir_avalon_streaming_sink.data
 			fir_avalon_streaming_sink_valid                   => CONNECTED_TO_fir_avalon_streaming_sink_valid,                   --                                  .valid
 			fir_avalon_streaming_sink_error                   => CONNECTED_TO_fir_avalon_streaming_sink_error,                   --                                  .error
+			fir_clk_in_clk                                    => CONNECTED_TO_fir_clk_in_clk,                                    --                        fir_clk_in.clk
+			fir_reset_reset_n                                 => CONNECTED_TO_fir_reset_reset_n,                                 --                         fir_reset.reset_n
 			fir_avalon_streaming_source_data                  => CONNECTED_TO_fir_avalon_streaming_source_data,                  --       fir_avalon_streaming_source.data
 			fir_avalon_streaming_source_valid                 => CONNECTED_TO_fir_avalon_streaming_source_valid,                 --                                  .valid
-			fir_avalon_streaming_source_error                 => CONNECTED_TO_fir_avalon_streaming_source_error,                 --                                  .error
-			fir_clk_in_clk                                    => CONNECTED_TO_fir_clk_in_clk,                                    --                        fir_clk_in.clk
-			fir_reset_reset_n                                 => CONNECTED_TO_fir_reset_reset_n                                  --                         fir_reset.reset_n
+			fir_avalon_streaming_source_error                 => CONNECTED_TO_fir_avalon_streaming_source_error                  --                                  .error
 		);
 

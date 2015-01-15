@@ -67,7 +67,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </table>
   <table class="blueBar">
    <tr>
-    <td class="l">2015.01.13.23:59:11</td>
+    <td class="l">2015.01.14.21:07:02</td>
     <td class="r">Datasheet</td>
    </tr>
   </table>
@@ -523,16 +523,6 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      <tr>
       <td></td>
       <td></td>
-      <td class="to">&#160;&#160;out</td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="from">bar1_0&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
       <td class="to">&#160;&#160;out_csr</td>
      </tr>
      <tr>
@@ -544,6 +534,16 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="to">&#160;&#160;out_irq</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">bar1_0&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;out</td>
      </tr>
      <tr style="height:6px">
       <td></td>
@@ -1494,22 +1494,6 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="from">m_read&#160;&#160;</td>
-      <td class="neighbor" rowspan="2">
-       <a href="#module_ada_fifo">ada_fifo</a>
-      </td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="to">&#160;&#160;out</td>
-     </tr>
-     <tr style="height:6px">
-      <td></td>
-     </tr>
-     <tr>
-      <td></td>
-      <td></td>
-      <td class="from">m_read&#160;&#160;</td>
       <td class="neighbor" rowspan="4">
        <a href="#module_fir">fir</a>
       </td>
@@ -1528,6 +1512,22 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="to">&#160;&#160;avalon_mm_slave</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">m_read&#160;&#160;</td>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_ada_fifo">ada_fifo</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;out</td>
      </tr>
     </table>
    </div>
@@ -1580,7 +1580,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">sinkErrorWidth</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">1</td>
        </tr>
        <tr>
         <td class="parametername">sourceErrorWidth</td>
@@ -1709,7 +1709,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">IN_ERROR_WIDTH</td>
-        <td class="parametervalue">0</td>
+        <td class="parametervalue">1</td>
        </tr>
        <tr>
         <td class="parametername">OUT_ERROR_WIDTH</td>
@@ -2183,12 +2183,6 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td class="from">bar1_0&#160;&#160;</td>
      </tr>
      <tr>
-      <td class="to">&#160;&#160;out</td>
-     </tr>
-     <tr>
-      <td class="from">bar1_0&#160;&#160;</td>
-     </tr>
-     <tr>
       <td class="to">&#160;&#160;out_csr</td>
      </tr>
      <tr>
@@ -2196,6 +2190,12 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      </tr>
      <tr>
       <td class="to">&#160;&#160;out_irq</td>
+     </tr>
+     <tr>
+      <td class="from">bar1_0&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;out</td>
      </tr>
      <tr style="height:6px">
       <td></td>
@@ -2208,18 +2208,6 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      </tr>
      <tr>
       <td class="to">&#160;&#160;reset_out</td>
-     </tr>
-     <tr style="height:6px">
-      <td></td>
-     </tr>
-     <tr>
-      <td class="neighbor" rowspan="2">
-       <a href="#module_sgdma_0">sgdma_0</a>
-      </td>
-      <td class="from">m_read&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td class="to">&#160;&#160;out</td>
      </tr>
      <tr style="height:6px">
       <td></td>
@@ -2244,6 +2232,18 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      </tr>
      <tr>
       <td class="to">&#160;&#160;reset_in</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_sgdma_0">sgdma_0</a>
+      </td>
+      <td class="from">m_read&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;out</td>
      </tr>
     </table>
    </div>
@@ -2980,7 +2980,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   <table class="blueBar">
    <tr>
     <td class="l">generation took 0.01 seconds</td>
-    <td class="r">rendering took 0.11 seconds</td>
+    <td class="r">rendering took 0.14 seconds</td>
    </tr>
   </table>
  </body>

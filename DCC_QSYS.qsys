@@ -134,6 +134,14 @@
          type = "int";
       }
    }
+   element ledr.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
    element sw.s1
    {
       datum _lockedAddress
@@ -145,14 +153,6 @@
       {
          value = "160";
          type = "String";
-      }
-   }
-   element ledr.s1
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
       }
    }
    element sgdma_0
@@ -282,11 +282,6 @@
    type="avalon_streaming"
    dir="end" />
  <interface
-   name="fir_avalon_streaming_source"
-   internal="fir.avalon_streaming_source"
-   type="avalon_streaming"
-   dir="start" />
- <interface
    name="fir_clk_in"
    internal="fir_clock_bridge.in_clk"
    type="clock"
@@ -296,6 +291,11 @@
    internal="fir_reset_bridge.in_reset"
    type="reset"
    dir="end" />
+ <interface
+   name="fir_avalon_streaming_source"
+   internal="fir.avalon_streaming_source"
+   type="avalon_streaming"
+   dir="start" />
  <module kind="clock_source" version="14.0" enabled="1" name="clk_50">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -437,7 +437,7 @@
   <parameter name="internalFIFODepth" value="2" />
   <parameter name="readBlockDataWidth" value="32" />
   <parameter name="readBurstcountWidth" value="4" />
-  <parameter name="sinkErrorWidth" value="0" />
+  <parameter name="sinkErrorWidth" value="1" />
   <parameter name="sourceErrorWidth" value="0" />
   <parameter name="transferMode" value="MEMORY_TO_MEMORY" />
   <parameter name="writeBurstcountWidth" value="4" />
@@ -714,28 +714,10 @@
    start="pcie_hard_ip_0.pcie_core_reset"
    end="ada_fifo.reset_out" />
  <connection
-   kind="avalon"
-   version="14.0"
-   start="sgdma_0.m_read"
-   end="ada_fifo.out">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0080" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
    kind="clock"
    version="14.0"
    start="ada_clock_bridge.out_clk"
    end="ada_fifo.clk_in" />
- <connection
-   kind="avalon"
-   version="14.0"
-   start="pcie_hard_ip_0.bar1_0"
-   end="ada_fifo.out">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0080" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
  <connection
    kind="avalon"
    version="14.0"
@@ -817,6 +799,24 @@
    end="fir.avalon_mm_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="pcie_hard_ip_0.bar1_0"
+   end="ada_fifo.out">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0080" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="sgdma_0.m_read"
+   end="ada_fifo.out">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0080" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />

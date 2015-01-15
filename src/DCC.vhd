@@ -211,7 +211,7 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 ---------------------------------------------------------------
 -- COMPONENTS 
 ---------------------------------------------------------------
-	component HSMC_DCC_CLK
+	COMPONENT HSMC_DCC_CLK
 		PORT
 		(
 			areset		: IN STD_LOGIC  := '0';
@@ -221,9 +221,9 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			c2		: OUT STD_LOGIC ;
 			c3		: OUT STD_LOGIC 
 		);
-	end component;
+	END COMPONENT;
 	
-	component HEX_MODULE IS
+	COMPONENT HEX_MODULE IS
 	PORT (
 		HDIG			: IN 	STD_LOGIC_VECTOR (31 DOWNTO 0);		
 		HEX_0			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
@@ -235,9 +235,9 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 		HEX_6			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0);
 		HEX_7			: OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
 		);
-END component HEX_MODULE;
+	END COMPONENT HEX_MODULE;
 	
-	component HSMC_DCC IS 
+	COMPONENT HSMC_DCC IS 
 		PORT (
 			CLK				: IN STD_LOGIC;
 			CLK_180			: IN STD_LOGIC;
@@ -290,9 +290,9 @@ END component HEX_MODULE;
 			AIC_SPI_CS		: OUT STD_LOGIC;					-- Chip Select = 0  (low active)
 			AIC_BCLK			: INOUT STD_LOGIC					-- I2S serial-bit clock.
 			);
-		END component HSMC_DCC;
+		END COMPONENT HSMC_DCC;
 		
-	component DCC_QSYS is
+	COMPONENT DCC_QSYS is
 		port (
 			clk_clk                                           : in  std_logic                     := 'X';             -- clk
 			reset_reset_n                                     : in  std_logic                     := 'X';             -- reset_n
@@ -318,9 +318,30 @@ END component HEX_MODULE;
 			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
 			fir_reset_reset_n                                 : in  std_logic                     := 'X'              -- reset_n
 		);
-	end component DCC_QSYS;
+	END COMPONENT DCC_QSYS;
 	
-	component TEST_COUNTER IS 
+	COMPONENT FIR_LMS IS 
+	GENERIC(	
+		W1 : INTEGER := 18;
+		W2 : INTEGER := 36;
+		L 	: INTEGER := 2048
+	);
+	PORT (
+		CLK				: IN STD_LOGIC;
+		reset_n			: IN STD_LOGIC;
+		-- ADC DATA
+		ADA_DOUT			: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+		ADB_DOUT			: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
+		-- DAC DATA
+		DA_DIN			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
+		DB_DIN			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
+		-- TEST PORT
+		e_out				: OUT STD_LOGIC_VECTOR(W2-1 DOWNTO 0);
+		y_out				: OUT STD_LOGIC_VECTOR(W2-1 DOWNTO 0)
+		);
+	END COMPONENT;
+	
+	COMPONENT TEST_COUNTER IS 
 	PORT (	
 				clk															: in std_logic;
 				reset_n															: in std_logic;
@@ -328,7 +349,8 @@ END component HEX_MODULE;
 				ada_fifo_in_data                                  : out  std_logic_vector(31 downto 0) := (others => 'X'); -- data
 				ada_fifo_in_ready                                 : in std_logic                                        -- ready
 	);
-	END component TEST_COUNTER;
+	END COMPONENT TEST_COUNTER;
+	
 
 ---------------------------------------------------------------
 -- SIGNALS
@@ -348,6 +370,7 @@ END component HEX_MODULE;
 	signal sDB_DIN			: std_logic_vector(13 downto 0) := (others => '0');
 	signal sDA_DIN_FIR	: std_logic_vector(28 downto 0) := (others => '0');
 	signal sADA_DOUT		: std_logic_vector(13 downto 0) := (others => '0');
+	signal sADB_DOUT		: std_logic_vector(13 downto 0) := (others => '0');
 	signal sADA_DOUT_FIR : std_logic_vector(14 downto 0) := (others => '0');
 	
 BEGIN
@@ -377,7 +400,7 @@ BEGIN
 ---------------------------------------------------------------		
 	HEX_MODULE_INST : HEX_MODULE
 		PORT MAP(
-			HDIG		=> x"13012015",		
+			HDIG		=> x"15012015",		
 			HEX_0		=> HEX0,	
 			HEX_1		=> HEX1,	
 			HEX_2		=> HEX2,	
@@ -482,6 +505,26 @@ BEGIN
 			AIC_BCLK				=> HSMC_AIC_BCLK		-- I2S serial-bit clock.
 			);
 			
+	FIR_LMS_INST : FIR_LMS
+	GENERIC MAP(	
+		W1 => 18,
+		W2 => 36,
+		L 	=> 2048
+		)
+	PORT MAP(
+		CLK				=> CLOCK_50,
+		reset_n			=> reset_n,
+		-- ADC DATA
+		ADA_DOUT			=> sADA_DOUT,
+		ADB_DOUT			=> sADB_DOUT,
+		-- DAC DATA
+		DA_DIN			=> open,
+		DB_DIN			=> open,
+		-- TEST PORT
+		e_out				=> open,
+		y_out				=> open
+		);
+		
 	TEST_COUNTER_INST : TEST_COUNTER
 	PORT MAP(	
 				clk						=> sCLK25_0,									 

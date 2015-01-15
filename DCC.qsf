@@ -1116,5 +1116,6 @@ set_global_assignment -name SDC_FILE DCC.sdc
 set_global_assignment -name QIP_FILE src/IP/HSMC_DCC_CLK.qip
 set_global_assignment -name VHDL_FILE src/TEST_COUNTER.vhd
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name VHDL_FILE src/FIR_LMS.vhd
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
