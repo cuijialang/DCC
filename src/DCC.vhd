@@ -301,45 +301,9 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
 			sw_external_connection_export                     : in  std_logic_vector(17 downto 0) := (others => 'X'); -- export
-			ledr_external_connection_export                   : out std_logic_vector(17 downto 0);                     -- export
-			ada_fifo_in_valid                                 : in  std_logic                     := 'X';             -- valid
-			ada_fifo_in_data                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
-			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
-			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
-			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
-			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X';             -- clk
-			ada_fifo_reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
-			fir_avalon_streaming_sink_data                    : in  std_logic_vector(14 downto 0) := (others => 'X'); -- data
-			fir_avalon_streaming_sink_valid                   : in  std_logic                     := 'X';             -- valid
-			fir_avalon_streaming_sink_error                   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			fir_avalon_streaming_source_data                  : out std_logic_vector(28 downto 0);                    -- data
-			fir_avalon_streaming_source_valid                 : out std_logic;                                        -- valid
-			fir_avalon_streaming_source_error                 : out std_logic_vector(1 downto 0);                     -- error
-			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
-			fir_reset_reset_n                                 : in  std_logic                     := 'X'              -- reset_n
+			ledr_external_connection_export                   : out std_logic_vector(17 downto 0)                     -- export
 		);
 	END COMPONENT DCC_QSYS;
-	
-	COMPONENT FIR_LMS IS 
-	GENERIC(	
-		W1 : INTEGER := 18;
-		W2 : INTEGER := 36;
-		L 	: INTEGER := 2048
-	);
-	PORT (
-		CLK				: IN STD_LOGIC;
-		reset_n			: IN STD_LOGIC;
-		-- ADC DATA
-		ADA_DOUT			: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
-		ADB_DOUT			: IN STD_LOGIC_VECTOR(13 DOWNTO 0);
-		-- DAC DATA
-		DA_DIN			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
-		DB_DIN			: OUT STD_LOGIC_VECTOR(13 DOWNTO 0);
-		-- TEST PORT
-		e_out				: OUT STD_LOGIC_VECTOR(W2-1 DOWNTO 0);
-		y_out				: OUT STD_LOGIC_VECTOR(W2-1 DOWNTO 0)
-		);
-	END COMPONENT;
 	
 	COMPONENT TEST_COUNTER IS 
 	PORT (	
@@ -414,9 +378,6 @@ BEGIN
 ---------------------------------------------------------------
 -- PCIe - QSYS
 ---------------------------------------------------------------
-	sADA_DOUT_FIR <= '0' & sADA_DOUT;
-	sDA_DIN <= sDA_DIN_FIR(27 downto 14);
-	sDB_DIN <= sDA_DIN_FIR(13 downto 0);
 	
 	DCC_QSYS_INST : component DCC_QSYS
 		port map (
@@ -427,23 +388,7 @@ BEGIN
 			pcie_hard_ip_0_rx_in_rx_datain_0                  => PCIE_RX_P(0),				-- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => PCIE_TX_P(0),				-- tx_dataout_0
 			sw_external_connection_export                     => SW,								-- export
-			ledr_external_connection_export                   => LEDR,							-- export
-			ada_fifo_in_valid                                 => sValid,                     --                       ada_fifo_in.valid
-			ada_fifo_in_data                                  => sData,                                  --                                  .data
-			ada_fifo_in_channel                               => '0',                               --                                  .channel
-			ada_fifo_in_error                                 => '0',                                 --                                  .error
-			ada_fifo_in_ready                                 => sReady,                                 --                                  .ready
-			ada_fifo_clk_in_clk                               => sCLK25_0,                    --                   ada_fifo_clk_in.clk
-			ada_fifo_reset_reset_n                            => reset_n,                            --                    ada_fifo_reset.reset_n
-			fir_avalon_streaming_sink_data                    => sADA_DOUT_FIR,                    --         fir_avalon_streaming_sink.data
-			fir_avalon_streaming_sink_valid                   => '1',                   --                                  .valid
-			fir_avalon_streaming_sink_error                   => b"00",                   --                                  .error
-			fir_avalon_streaming_source_data                  => sDA_DIN_FIR,                  --       fir_avalon_streaming_source.data
-			fir_avalon_streaming_source_valid                 => open,                 --                                  .valid
-			fir_avalon_streaming_source_error                 => open,                 --                                  .error
-			fir_clk_in_clk                                    => CLOCK_50,                                    --                        fir_clk_in.clk
-			fir_reset_reset_n                                 => reset_n                                  --                         fir_reset.reset_n
-			
+			ledr_external_connection_export                   => LEDR							-- export			
 		);
 	
 	PCIE_WAKE_N <= '1';
@@ -458,11 +403,11 @@ BEGIN
 			CLK_270				=> sCLK25_270,
 			reset_n				=> reset_n,
 			-- ADC DATA
-			ADA_DOUT				=> sADA_DOUT,
+			ADA_DOUT				=> open,
 			ADB_DOUT				=> open,
 			-- DAC DATA
-			DA_DIN				=> sDA_DIN,
-			DB_DIN				=> sDB_DIN,			
+			DA_DIN				=> (others => '0'),
+			DB_DIN				=> (others => '0'),			
 			-- TO HSMC CONNECTOR DCC
 			CLKIN1				=> HSMC_CLKIN1,								--TP1
 			CLKOUT0				=> HSMC_CLKOUT0,								--TP2
@@ -504,27 +449,7 @@ BEGIN
 			AIC_SPI_CS			=> HSMC_AIC_SPI_CS,	-- Chip Select = 0  (low active)
 			AIC_BCLK				=> HSMC_AIC_BCLK		-- I2S serial-bit clock.
 			);
-			
-	FIR_LMS_INST : FIR_LMS
-	GENERIC MAP(	
-		W1 => 18,
-		W2 => 36,
-		L 	=> 2048
-		)
-	PORT MAP(
-		CLK				=> CLOCK_50,
-		reset_n			=> reset_n,
-		-- ADC DATA
-		ADA_DOUT			=> sADA_DOUT,
-		ADB_DOUT			=> sADB_DOUT,
-		-- DAC DATA
-		DA_DIN			=> open,
-		DB_DIN			=> open,
-		-- TEST PORT
-		e_out				=> open,
-		y_out				=> open
-		);
-		
+					
 	TEST_COUNTER_INST : TEST_COUNTER
 	PORT MAP(	
 				clk						=> sCLK25_0,									 

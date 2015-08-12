@@ -29,22 +29,7 @@
 			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
 			pcie_hard_ip_0_reconfig_togxb_data                : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- data
-			pcie_hard_ip_0_reconfig_fromgxb_0_data            : out std_logic_vector(4 downto 0);                     -- data
-			ada_fifo_in_valid                                 : in  std_logic                     := 'X';             -- valid
-			ada_fifo_in_data                                  : in  std_logic_vector(31 downto 0) := (others => 'X'); -- data
-			ada_fifo_in_channel                               : in  std_logic                     := 'X';             -- channel
-			ada_fifo_in_error                                 : in  std_logic                     := 'X';             -- error
-			ada_fifo_in_ready                                 : out std_logic;                                        -- ready
-			ada_fifo_clk_in_clk                               : in  std_logic                     := 'X';             -- clk
-			ada_fifo_reset_reset_n                            : in  std_logic                     := 'X';             -- reset_n
-			fir_avalon_streaming_sink_data                    : in  std_logic_vector(14 downto 0) := (others => 'X'); -- data
-			fir_avalon_streaming_sink_valid                   : in  std_logic                     := 'X';             -- valid
-			fir_avalon_streaming_sink_error                   : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- error
-			fir_clk_in_clk                                    : in  std_logic                     := 'X';             -- clk
-			fir_reset_reset_n                                 : in  std_logic                     := 'X';             -- reset_n
-			fir_avalon_streaming_source_data                  : out std_logic_vector(28 downto 0);                    -- data
-			fir_avalon_streaming_source_valid                 : out std_logic;                                        -- valid
-			fir_avalon_streaming_source_error                 : out std_logic_vector(1 downto 0)                      -- error
+			pcie_hard_ip_0_reconfig_fromgxb_0_data            : out std_logic_vector(4 downto 0)                      -- data
 		);
 	end component DCC_QSYS;
 
@@ -79,21 +64,6 @@
 			pcie_hard_ip_0_rx_in_rx_datain_0                  => CONNECTED_TO_pcie_hard_ip_0_rx_in_rx_datain_0,                  --              pcie_hard_ip_0_rx_in.rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => CONNECTED_TO_pcie_hard_ip_0_tx_out_tx_dataout_0,                --             pcie_hard_ip_0_tx_out.tx_dataout_0
 			pcie_hard_ip_0_reconfig_togxb_data                => CONNECTED_TO_pcie_hard_ip_0_reconfig_togxb_data,                --     pcie_hard_ip_0_reconfig_togxb.data
-			pcie_hard_ip_0_reconfig_fromgxb_0_data            => CONNECTED_TO_pcie_hard_ip_0_reconfig_fromgxb_0_data,            -- pcie_hard_ip_0_reconfig_fromgxb_0.data
-			ada_fifo_in_valid                                 => CONNECTED_TO_ada_fifo_in_valid,                                 --                       ada_fifo_in.valid
-			ada_fifo_in_data                                  => CONNECTED_TO_ada_fifo_in_data,                                  --                                  .data
-			ada_fifo_in_channel                               => CONNECTED_TO_ada_fifo_in_channel,                               --                                  .channel
-			ada_fifo_in_error                                 => CONNECTED_TO_ada_fifo_in_error,                                 --                                  .error
-			ada_fifo_in_ready                                 => CONNECTED_TO_ada_fifo_in_ready,                                 --                                  .ready
-			ada_fifo_clk_in_clk                               => CONNECTED_TO_ada_fifo_clk_in_clk,                               --                   ada_fifo_clk_in.clk
-			ada_fifo_reset_reset_n                            => CONNECTED_TO_ada_fifo_reset_reset_n,                            --                    ada_fifo_reset.reset_n
-			fir_avalon_streaming_sink_data                    => CONNECTED_TO_fir_avalon_streaming_sink_data,                    --         fir_avalon_streaming_sink.data
-			fir_avalon_streaming_sink_valid                   => CONNECTED_TO_fir_avalon_streaming_sink_valid,                   --                                  .valid
-			fir_avalon_streaming_sink_error                   => CONNECTED_TO_fir_avalon_streaming_sink_error,                   --                                  .error
-			fir_clk_in_clk                                    => CONNECTED_TO_fir_clk_in_clk,                                    --                        fir_clk_in.clk
-			fir_reset_reset_n                                 => CONNECTED_TO_fir_reset_reset_n,                                 --                         fir_reset.reset_n
-			fir_avalon_streaming_source_data                  => CONNECTED_TO_fir_avalon_streaming_source_data,                  --       fir_avalon_streaming_source.data
-			fir_avalon_streaming_source_valid                 => CONNECTED_TO_fir_avalon_streaming_source_valid,                 --                                  .valid
-			fir_avalon_streaming_source_error                 => CONNECTED_TO_fir_avalon_streaming_source_error                  --                                  .error
+			pcie_hard_ip_0_reconfig_fromgxb_0_data            => CONNECTED_TO_pcie_hard_ip_0_reconfig_fromgxb_0_data             -- pcie_hard_ip_0_reconfig_fromgxb_0.data
 		);
 
