@@ -290,8 +290,47 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			AIC_SPI_CS		: OUT STD_LOGIC;					-- Chip Select = 0  (low active)
 			AIC_BCLK			: INOUT STD_LOGIC					-- I2S serial-bit clock.
 			);
-		END COMPONENT HSMC_DCC;
-		
+	END COMPONENT HSMC_DCC;
+	
+	COMPONENT micFilter is
+	GENERIC (	adFil_length : Integer := 500;		-- Adaptive Filter - Length
+				adFil_aWidth : Integer := 9;				-- Adaptive Filter - Address Width
+				adFil_pTH 	: Integer := 2048;			-- Adaptive Filter - Positive Threshold (4.12)
+				adFil_nTH 	: Integer := -2048;			-- Adaptive Filter - Negative Threshold (4.12)
+				adFil_weight : Integer := 26844;			-- Adaptive Filter - Weight mu (4.28)
+				FIR_cFile 	: string := "/dos/Dropbox/HS-KA/STM3/ProyectB/DCC/src/micFilter/taps256.dat";    -- FIR Filter - Coefficient File Path
+				FIR_length 	: INTEGER := 257;           -- FIR Filter - Length
+				FIR_aWidth	: INTEGER := 9;				-- FIR Filter - Address Width
+				DsFil_div   : INTEGER := 2500;          -- Downsample Filter - Downsample Rate
+				DsFil_mul  	: Integer := 107374;        -- Downsample Filter - Factor (4.28)
+				clkGen_lP	: INTEGER := 1250;		    -- Clock Generator - Low Period
+				clkGeN_hP	: INTEGER := 1250;		    -- Clock Generator - High Period
+				FIFO_aWidth  : integer := 19;           -- FIFO Buffer - Address Width
+				FIFO_length  : integer := 340151;       -- FIFO Buffer - Length
+				IntX4_cFile : string := "/dos/Dropbox/HS-KA/STM3/ProyectB/DCC/src/micFilter/i4Taps.dat"; -- InterpolationX4 - Coefficient File Path
+				IntX5_cFile1 : string := "/dos/Dropbox/HS-KA/STM3/ProyectB/DCC/src/micFilter/i5Taps.dat"; -- InterpolationX5 - Coefficient File Path
+				IntX5_cFile2 : string := "/dos/Dropbox/HS-KA/STM3/ProyectB/DCC/src/micFilter/i5Taps.dat";--2.dat"; -- InterpolationX5 - Coefficient File Path
+				IntX5_cFile3 : string := "/dos/Dropbox/HS-KA/STM3/ProyectB/DCC/src/micFilter/i5Taps.dat";--3.dat"; -- InterpolationX5 - Coefficient File Path
+				IntX5_cFile4 : string := "/dos/Dropbox/HS-KA/STM3/ProyectB/DCC/src/micFilter/i5Taps.dat";--4.dat"; -- InterpolationX5 - Coefficient File Path D:\Dropbox\HS-KA\STM3\ProyectB\micFilter\
+				intClkGen_lP1	: INTEGER := 3;		    -- Interp Clock Generator - Clk1 Low Period
+            intClkGen_hP1	: INTEGER := 2;		    -- Interp Clock Generator - Clk1 High Period
+				intClkGen_lP2	: INTEGER := 13;			-- Interp Clock Generator - Clk2 Low Period
+            intClkGen_hP2	: INTEGER := 12;			-- Interp Clock Generator - Clk2 High Period
+				intClkGen_lP3	: INTEGER := 63;			-- Interp Clock Generator - Clk3 Low Period
+            intClkGen_hP3	: INTEGER := 62;			-- Interp Clock Generator - Clk3 High Period
+				intClkGen_lP4	: INTEGER := 313;			-- Interp Clock Generator - Clk4 Low Period
+            intClkGen_hP4	: INTEGER := 312;			-- Interp Clock Generator - Clk4 High Period
+				Sub_factor      : INTEGER RANGE 0 TO 65565 := 4111 -- Subtract - DIN2 Factor (4.12)
+				);
+	PORT (	adj 		: in STD_LOGIC;											-- Coefficient update halt input bit (low = stop update)
+			clk_in 		: in STD_LOGIC;											-- Clock input (nom. 25 MHz)
+			gamma 		: in STD_LOGIC_VECTOR ( 15 downto 0 );					-- Detector signal input s(k)
+			mic 		: in STD_LOGIC_VECTOR ( 15 downto 0 );					-- Mechanical sensor signal input v(q)
+			rst 		: in STD_LOGIC;											-- Synchronous reset input
+			gamma_corr 	: out STD_LOGIC_VECTOR ( 15 downto 0 ) := x"0000";		-- Filter output y(k)
+			clk_outp 	: out STD_LOGIC := '0');								-- Clock output
+  END COMPONENT micFilter;
+  
 	COMPONENT DCC_QSYS is
 		port (
 			clk_clk                                           : in  std_logic                     := 'X';             -- clk
@@ -332,11 +371,13 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 	
 	signal sDA_DIN			: std_logic_vector(13 downto 0) := (others => '0');
 	signal sDB_DIN			: std_logic_vector(13 downto 0) := (others => '0');
-	signal sDA_DIN_FIR	: std_logic_vector(28 downto 0) := (others => '0');
 	signal sADA_DOUT		: std_logic_vector(13 downto 0) := (others => '0');
 	signal sADB_DOUT		: std_logic_vector(13 downto 0) := (others => '0');
-	signal sADA_DOUT_FIR : std_logic_vector(14 downto 0) := (others => '0');
 	
+	signal sGamma : std_logic_vector(15 downto 0) := (others => '0');
+	signal sMic : std_logic_vector(15 downto 0) := (others => '0');
+	signal adjust			: std_logic := '0';
+	signal sGamma_corr : std_logic_vector(15 downto 0);
 BEGIN
 
 ---------------------------------------------------------------
@@ -364,7 +405,7 @@ BEGIN
 ---------------------------------------------------------------		
 	HEX_MODULE_INST : HEX_MODULE
 		PORT MAP(
-			HDIG		=> x"15012015",		
+			HDIG		=> x"29082015",		
 			HEX_0		=> HEX0,	
 			HEX_1		=> HEX1,	
 			HEX_2		=> HEX2,	
@@ -403,11 +444,11 @@ BEGIN
 			CLK_270				=> sCLK25_270,
 			reset_n				=> reset_n,
 			-- ADC DATA
-			ADA_DOUT				=> open,
-			ADB_DOUT				=> open,
+			ADA_DOUT				=> sADA_DOUT,
+			ADB_DOUT				=> sADB_DOUT,
 			-- DAC DATA
-			DA_DIN				=> (others => '0'),
-			DB_DIN				=> (others => '0'),			
+			DA_DIN				=> sDA_DIN,
+			DB_DIN				=> sDB_DIN,			
 			-- TO HSMC CONNECTOR DCC
 			CLKIN1				=> HSMC_CLKIN1,								--TP1
 			CLKOUT0				=> HSMC_CLKOUT0,								--TP2
@@ -449,7 +490,22 @@ BEGIN
 			AIC_SPI_CS			=> HSMC_AIC_SPI_CS,	-- Chip Select = 0  (low active)
 			AIC_BCLK				=> HSMC_AIC_BCLK		-- I2S serial-bit clock.
 			);
-					
+---------------------------------------------------------------
+-- micFilter
+---------------------------------------------------------------
+	micFilter_inst : micFilter
+	PORT MAP (	
+			adj 			=> adjust,						-- Coefficient update halt input bit (low = stop update)
+			clk_in 		=> sCLK25_0,						-- Clock input (nom. 25 MHz)
+			gamma 		=> sGamma,						-- Detector signal input s(k)
+			mic 			=> sMic,						-- Mechanical sensor signal input v(q)
+			rst 			=> reset,						-- Synchronous reset input
+			gamma_corr 	=> sGamma_corr,						-- Filter output y(k)
+			clk_outp 	=> open						-- Clock output
+	);
+---------------------------------------------------------------
+-- Test
+---------------------------------------------------------------	
 	TEST_COUNTER_INST : TEST_COUNTER
 	PORT MAP(	
 				clk						=> sCLK25_0,									 
@@ -458,5 +514,9 @@ BEGIN
 				ada_fifo_in_data     => sData,                       -- data
 				ada_fifo_in_ready    => sReady                         -- ready
 	);
+	
+	sGamma <= std_logic_vector(resize(signed(sADA_DOUT), sGamma'length));	-- putting 14 bit from adc to 16 bit for filter
+	sMic 	<= std_logic_vector(resize(signed(sADB_DOUT), sMic'length));		-- putting 14 bit from adc to 16 bit for filter
+	sDA_DIN <= std_logic_vector(shift_right(signed(sGamma_corr),2)(13 DOWNTO 0));
 
 END DCC_ARCH;

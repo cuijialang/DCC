@@ -4,7 +4,7 @@
 #include "PCIE.h"
 
 #if defined(__GNUC__)
-    #include <dlfcn.h> // dlopen/dlclsoe for linxu
+    #include <dlfcn.h> // dlopen/dlclsoe for linux
 #else
     #define dlopen(x,y) ::LoadLibrary(x)
     #define dlclose     ::FreeLibrary

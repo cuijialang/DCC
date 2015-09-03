@@ -1107,6 +1107,26 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "DCC_QSYS:DCC_QSYS_INST|DCC_QSYS_ada_fifo:ada_fifo|DCC_QSYS_ada_fifo_dual_clock_fifo_for_other_info:the_dcfifo_other_info|rdclk" -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_global_assignment -name VHDL_FILE src/micFilter/Subtract/main_Subtract.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/Interpolation/InterpolationX5/main_InterpolationX5.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/Interpolation/InterpolationX4/main_InterpolationX4.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/Interpolation/InterpClockGen/main_clockGen.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/Interpolation/iMultiply.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/Interpolation/iAdder.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/FIRFilter/rwRAM_Lx16.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/FIRFilter/rRAM_Lx32.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/FIRFilter/mainFIRFilter.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/FIRFilter/MAC.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/FIFO/RAMgen.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/FIFO/main_genFIFO.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/DownsampleFilter/main_DownsampleFilter.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/ClockGenerator/main_clockGenerator.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/AdpativeFilter/main_genAdaptiveFilter.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/AdpativeFilter/DualClkRam.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/txt_util.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/Multiplier16x32_32.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/MicFilter_TB.vhd
+set_global_assignment -name VHDL_FILE src/micFilter/MicFilter.vhd
 set_global_assignment -name VHDL_FILE src/HEX_MODULE.vhd
 set_global_assignment -name VHDL_FILE src/HDIG_HEX.vhd
 set_global_assignment -name VHDL_FILE src/HSMC_DCC.vhd
@@ -1116,6 +1136,6 @@ set_global_assignment -name SDC_FILE DCC.sdc
 set_global_assignment -name QIP_FILE src/IP/HSMC_DCC_CLK.qip
 set_global_assignment -name VHDL_FILE src/TEST_COUNTER.vhd
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
