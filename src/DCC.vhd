@@ -367,7 +367,7 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 	
 	signal sValid			: STD_LOGIC := '0';
 	signal sData			: STD_LOGIC_VECTOR(31 downto 0) := (OTHERS => '0');
-	signal sReady			: STD_LOGIC := '0';
+	signal sReady			: STD_LOGIC := '1';
 	
 	signal sDA_DIN			: std_logic_vector(13 downto 0) := (others => '0');
 	signal sDB_DIN			: std_logic_vector(13 downto 0) := (others => '0');
@@ -405,7 +405,7 @@ BEGIN
 ---------------------------------------------------------------		
 	HEX_MODULE_INST : HEX_MODULE
 		PORT MAP(
-			HDIG		=> x"29082015",		
+			HDIG		=> x"03092015",		
 			HEX_0		=> HEX0,	
 			HEX_1		=> HEX1,	
 			HEX_2		=> HEX2,	
