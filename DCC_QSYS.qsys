@@ -49,6 +49,22 @@
          type = "int";
       }
    }
+   element merlin_demultiplexer_0
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element merlin_width_adapter_0
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
    element pcie_hard_ip_0
    {
       datum _sortIndex
@@ -184,6 +200,36 @@
    internal="pcie_hard_ip_0.reconfig_fromgxb_0"
    type="conduit"
    dir="end" />
+ <interface
+   name="inter5_4"
+   internal="merlin_demultiplexer_0.src5"
+   type="avalon_streaming"
+   dir="start" />
+ <interface
+   name="inter5_0"
+   internal="merlin_demultiplexer_0.src1"
+   type="avalon_streaming"
+   dir="start" />
+ <interface
+   name="inter4"
+   internal="merlin_demultiplexer_0.src0"
+   type="avalon_streaming"
+   dir="start" />
+ <interface
+   name="inter5_1"
+   internal="merlin_demultiplexer_0.src2"
+   type="avalon_streaming"
+   dir="start" />
+ <interface
+   name="inter5_2"
+   internal="merlin_demultiplexer_0.src3"
+   type="avalon_streaming"
+   dir="start" />
+ <interface
+   name="inter5_3"
+   internal="merlin_demultiplexer_0.src4"
+   type="avalon_streaming"
+   dir="start" />
  <module kind="clock_source" version="14.0" enabled="1" name="clk_50">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -327,7 +373,7 @@
   <parameter name="readBurstcountWidth" value="4" />
   <parameter name="sinkErrorWidth" value="1" />
   <parameter name="sourceErrorWidth" value="0" />
-  <parameter name="transferMode" value="MEMORY_TO_MEMORY" />
+  <parameter name="transferMode" value="MEMORY_TO_STREAM" />
   <parameter name="writeBurstcountWidth" value="4" />
   <parameter name="deviceFamilyString" value="Cyclone IV GX" />
  </module>
@@ -358,6 +404,75 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="18" />
   <parameter name="clockRate" value="125000000" />
+ </module>
+ <module
+   kind="altera_merlin_demultiplexer"
+   version="14.0"
+   enabled="1"
+   name="merlin_demultiplexer_0">
+  <parameter name="ST_DATA_W" value="32" />
+  <parameter name="ST_CHANNEL_W" value="6" />
+  <parameter name="NUM_OUTPUTS" value="6" />
+  <parameter name="VALID_WIDTH" value="1" />
+  <parameter name="MERLIN_PACKET_FORMAT" value="" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="125000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV GX" />
+ </module>
+ <module
+   kind="altera_merlin_width_adapter"
+   version="14.0"
+   enabled="1"
+   name="merlin_width_adapter_0">
+  <parameter name="IN_PKT_ADDR_H" value="5" />
+  <parameter name="IN_PKT_ADDR_L" value="0" />
+  <parameter name="IN_PKT_DATA_H" value="7" />
+  <parameter name="IN_PKT_DATA_L" value="0" />
+  <parameter name="IN_PKT_BYTEEN_H" value="7" />
+  <parameter name="IN_PKT_BYTEEN_L" value="0" />
+  <parameter name="IN_PKT_BYTE_CNT_H" value="7" />
+  <parameter name="IN_PKT_BYTE_CNT_L" value="0" />
+  <parameter name="IN_PKT_TRANS_COMPRESSED_READ" value="7" />
+  <parameter name="IN_PKT_BURSTWRAP_H" value="7" />
+  <parameter name="IN_PKT_BURSTWRAP_L" value="0" />
+  <parameter name="IN_PKT_BURST_SIZE_H" value="7" />
+  <parameter name="IN_PKT_BURST_SIZE_L" value="0" />
+  <parameter name="IN_PKT_RESPONSE_STATUS_H" value="7" />
+  <parameter name="IN_PKT_RESPONSE_STATUS_L" value="0" />
+  <parameter name="IN_PKT_TRANS_EXCLUSIVE" value="7" />
+  <parameter name="IN_PKT_BURST_TYPE_H" value="7" />
+  <parameter name="IN_PKT_BURST_TYPE_L" value="0" />
+  <parameter name="IN_PKT_ORI_BURST_SIZE_L" value="0" />
+  <parameter name="IN_PKT_ORI_BURST_SIZE_H" value="7" />
+  <parameter name="IN_ST_DATA_W" value="8" />
+  <parameter name="OUT_PKT_ADDR_H" value="5" />
+  <parameter name="OUT_PKT_ADDR_L" value="0" />
+  <parameter name="OUT_PKT_DATA_H" value="31" />
+  <parameter name="OUT_PKT_DATA_L" value="0" />
+  <parameter name="OUT_PKT_BYTEEN_H" value="31" />
+  <parameter name="OUT_PKT_BYTEEN_L" value="0" />
+  <parameter name="OUT_PKT_BYTE_CNT_H" value="31" />
+  <parameter name="OUT_PKT_BYTE_CNT_L" value="0" />
+  <parameter name="OUT_PKT_TRANS_COMPRESSED_READ" value="31" />
+  <parameter name="OUT_PKT_BURST_SIZE_H" value="31" />
+  <parameter name="OUT_PKT_BURST_SIZE_L" value="0" />
+  <parameter name="OUT_PKT_RESPONSE_STATUS_H" value="31" />
+  <parameter name="OUT_PKT_RESPONSE_STATUS_L" value="0" />
+  <parameter name="OUT_PKT_TRANS_EXCLUSIVE" value="31" />
+  <parameter name="OUT_PKT_BURST_TYPE_H" value="31" />
+  <parameter name="OUT_PKT_BURST_TYPE_L" value="0" />
+  <parameter name="OUT_PKT_ORI_BURST_SIZE_L" value="0" />
+  <parameter name="OUT_PKT_ORI_BURST_SIZE_H" value="31" />
+  <parameter name="OUT_ST_DATA_W" value="32" />
+  <parameter name="ST_CHANNEL_W" value="6" />
+  <parameter name="OPTIMIZE_FOR_RSP" value="0" />
+  <parameter name="RESPONSE_PATH" value="0" />
+  <parameter name="CONSTANT_BURST_SIZE" value="1" />
+  <parameter name="PACKING" value="1" />
+  <parameter name="IN_MERLIN_PACKET_FORMAT" value="" />
+  <parameter name="OUT_MERLIN_PACKET_FORMAT" value="" />
+  <parameter name="COMMAND_SIZE_W" value="3" />
+  <parameter name="ENABLE_ADDRESS_ALIGNMENT" value="1" />
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="125000000" />
  </module>
  <connection
    kind="clock"
@@ -439,15 +554,6 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
-   kind="avalon"
-   version="14.0"
-   start="sgdma_0.m_write"
-   end="pcie_hard_ip_0.txs">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x80000000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
    kind="interrupt"
    version="14.0"
    start="pcie_hard_ip_0.rxm_irq"
@@ -490,6 +596,46 @@
   <parameter name="baseAddress" value="0x00a0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="reset"
+   version="14.0"
+   start="pcie_hard_ip_0.pcie_core_reset"
+   end="merlin_demultiplexer_0.clk_reset" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk_50.clk_reset"
+   end="merlin_demultiplexer_0.clk_reset" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="pcie_hard_ip_0.pcie_core_clk"
+   end="merlin_demultiplexer_0.clk" />
+ <connection
+   kind="avalon_streaming"
+   version="14.0"
+   start="sgdma_0.out"
+   end="merlin_width_adapter_0.sink" />
+ <connection
+   kind="avalon_streaming"
+   version="14.0"
+   start="merlin_width_adapter_0.src"
+   end="merlin_demultiplexer_0.sink" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="pcie_hard_ip_0.pcie_core_reset"
+   end="merlin_width_adapter_0.clk_reset" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk_50.clk_reset"
+   end="merlin_width_adapter_0.clk_reset" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="pcie_hard_ip_0.pcie_core_clk"
+   end="merlin_width_adapter_0.clk" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

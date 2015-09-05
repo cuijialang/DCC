@@ -67,7 +67,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
   </table>
   <table class="blueBar">
    <tr>
-    <td class="l">2015.08.11.07:31:13</td>
+    <td class="l">2015.09.05.17:11:55</td>
     <td class="r">Datasheet</td>
    </tr>
   </table>
@@ -110,7 +110,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      <a href="#module_pcie_hard_ip_0"><b>pcie_hard_ip_0</b>
      </a>
     </td>
-    <td class="mastermodule" colspan="4">
+    <td class="mastermodule" colspan="3">
      <a href="#module_sgdma_0"><b>sgdma_0</b>
      </a>
     </td>
@@ -120,15 +120,13 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     <td class="masterr">&#160;bar2</td>
     <td class="masterl">&#160;descriptor_read</td>
     <td class="masterm">&#160;descriptor_write</td>
-    <td class="masterm">&#160;m_read</td>
-    <td class="masterr">&#160;m_write</td>
+    <td class="masterr">&#160;m_read</td>
    </tr>
    <tr>
     <td class="slavemodule">&#160;
      <a href="#module_pcie_hard_ip_0"><b>pcie_hard_ip_0</b>
      </a>
     </td>
-    <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
@@ -142,13 +140,11 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     <td class="addr"><span style="color:#989898">0x</span>80000000</td>
     <td class="addr"><span style="color:#989898">0x</span>80000000</td>
     <td class="addr"><span style="color:#989898">0x</span>80000000</td>
-    <td class="addr"><span style="color:#989898">0x</span>80000000</td>
    </tr>
    <tr>
     <td class="slavem">cra&#160;</td>
     <td class="empty"></td>
     <td class="addr"><span style="color:#989898">0x</span>00000000</td>
-    <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
@@ -163,13 +159,11 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
-    <td class="empty"></td>
    </tr>
    <tr>
     <td class="slaveb">csr&#160;</td>
     <td class="empty"></td>
     <td class="addr"><span style="color:#989898">0x</span>00004040</td>
-    <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
@@ -184,12 +178,10 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
-    <td class="empty"></td>
    </tr>
    <tr>
     <td class="slaveb">s1&#160;</td>
     <td class="addr"><span style="color:#989898">0x</span>00000000</td>
-    <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
@@ -205,12 +197,10 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
-    <td class="empty"></td>
    </tr>
    <tr>
     <td class="slaveb">s1&#160;</td>
     <td class="addr"><span style="color:#989898">0x</span>000000a0</td>
-    <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
     <td class="empty"></td>
@@ -276,7 +266,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <a href="#module_clk_50">clk_50</a>
       </td>
       <td class="from">clk&#160;&#160;</td>
-      <td class="main" rowspan="35">pcie_hard_ip_0</td>
+      <td class="main" rowspan="43">pcie_hard_ip_0</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;cal_blk_clk</td>
@@ -291,7 +281,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
      </tr>
      <tr>
-      <td class="neighbor" rowspan="8">
+      <td class="neighbor" rowspan="6">
        <a href="#module_sgdma_0">sgdma_0</a>
       </td>
       <td class="from">descriptor_read&#160;&#160;</td>
@@ -307,12 +297,6 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
      </tr>
      <tr>
       <td class="from">descriptor_write&#160;&#160;</td>
-     </tr>
-     <tr>
-      <td class="to">&#160;&#160;txs</td>
-     </tr>
-     <tr>
-      <td class="from">m_write&#160;&#160;</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;txs</td>
@@ -431,6 +415,58 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="to">&#160;&#160;s1</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">pcie_core_reset&#160;&#160;</td>
+      <td class="neighbor" rowspan="4">
+       <a href="#module_merlin_demultiplexer_0">merlin_demultiplexer_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;clk_reset</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">pcie_core_clk&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;clk</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">pcie_core_reset&#160;&#160;</td>
+      <td class="neighbor" rowspan="4">
+       <a href="#module_merlin_width_adapter_0">merlin_width_adapter_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;clk_reset</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">pcie_core_clk&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;clk</td>
      </tr>
     </table>
    </div>
@@ -1260,7 +1296,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <a href="#module_clk_50">clk_50</a>
       </td>
       <td class="from">clk_reset&#160;&#160;</td>
-      <td class="main" rowspan="19">sgdma_0</td>
+      <td class="main" rowspan="20">sgdma_0</td>
      </tr>
      <tr>
       <td class="to">&#160;&#160;reset</td>
@@ -1299,7 +1335,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td></td>
       <td class="from">descriptor_read&#160;&#160;</td>
-      <td class="neighbor" rowspan="8">
+      <td class="neighbor" rowspan="6">
        <a href="#module_pcie_hard_ip_0">pcie_hard_ip_0</a>
       </td>
      </tr>
@@ -1328,15 +1364,21 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
       <td></td>
       <td class="to">&#160;&#160;txs</td>
      </tr>
-     <tr>
+     <tr style="height:6px">
       <td></td>
-      <td></td>
-      <td class="from">m_write&#160;&#160;</td>
      </tr>
      <tr>
       <td></td>
       <td></td>
-      <td class="to">&#160;&#160;txs</td>
+      <td class="from">out&#160;&#160;</td>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_merlin_width_adapter_0">merlin_width_adapter_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;sink</td>
      </tr>
     </table>
    </div>
@@ -1397,7 +1439,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">transferMode</td>
-        <td class="parametervalue">MEMORY_TO_MEMORY</td>
+        <td class="parametervalue">MEMORY_TO_STREAM</td>
        </tr>
        <tr>
         <td class="parametername">writeBurstcountWidth</td>
@@ -1433,7 +1475,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">hasWriteBlock</td>
-        <td class="parametervalue">true</td>
+        <td class="parametervalue">false</td>
        </tr>
        <tr>
         <td class="parametername">deviceFamily</td>
@@ -1514,7 +1556,7 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        </tr>
        <tr>
         <td class="parametername">HAS_WRITE_BLOCK</td>
-        <td class="parametervalue">1</td>
+        <td class="parametervalue">0</td>
        </tr>
        <tr>
         <td class="parametername">IN_ERROR_WIDTH</td>
@@ -1539,6 +1581,10 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
        <tr>
         <td class="parametername">STREAM_DATA_WIDTH</td>
         <td class="parametervalue">32</td>
+       </tr>
+       <tr>
+        <td class="parametername">SYMBOLS_PER_BEAT</td>
+        <td class="parametervalue">4</td>
        </tr>
        <tr>
         <td class="parametername">UNALIGNED_TRANSFER</td>
@@ -1965,10 +2011,401 @@ div.greydiv { vertical-align:top ; text-align:center ; background:#eeeeee ; bord
     </tr>
    </table>
   </div>
+  <a name="module_merlin_demultiplexer_0"> </a>
+  <div>
+   <hr/>
+   <h2>merlin_demultiplexer_0</h2>altera_merlin_demultiplexer v14.0
+   <br/>
+   <div class="greydiv">
+    <table class="connectionboxes">
+     <tr>
+      <td class="neighbor" rowspan="4">
+       <a href="#module_pcie_hard_ip_0">pcie_hard_ip_0</a>
+      </td>
+      <td class="from">pcie_core_reset&#160;&#160;</td>
+      <td class="main" rowspan="10">merlin_demultiplexer_0</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;clk_reset</td>
+     </tr>
+     <tr>
+      <td class="from">pcie_core_clk&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;clk</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_clk_50">clk_50</a>
+      </td>
+      <td class="from">clk_reset&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;clk_reset</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_merlin_width_adapter_0">merlin_width_adapter_0</a>
+      </td>
+      <td class="from">src&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;sink</td>
+     </tr>
+    </table>
+   </div>
+   <br/>
+   <br/>
+   <table class="flowbox">
+    <tr>
+     <td class="parametersbox">
+      <h2>Parameters</h2>
+      <table>
+       <tr>
+        <td class="parametername">ST_DATA_W</td>
+        <td class="parametervalue">32</td>
+       </tr>
+       <tr>
+        <td class="parametername">ST_CHANNEL_W</td>
+        <td class="parametervalue">6</td>
+       </tr>
+       <tr>
+        <td class="parametername">NUM_OUTPUTS</td>
+        <td class="parametervalue">6</td>
+       </tr>
+       <tr>
+        <td class="parametername">VALID_WIDTH</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">MERLIN_PACKET_FORMAT</td>
+        <td class="parametervalue"></td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_CLK_CLOCK_RATE</td>
+        <td class="parametervalue">125000000</td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_DEVICE_FAMILY</td>
+        <td class="parametervalue">STINGRAY</td>
+       </tr>
+       <tr>
+        <td class="parametername">deviceFamily</td>
+        <td class="parametervalue">Cyclone IV GX</td>
+       </tr>
+       <tr>
+        <td class="parametername">generateLegacySim</td>
+        <td class="parametervalue">false</td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>&#160;&#160;
+   <table class="flowbox">
+    <tr>
+     <td class="parametersbox">
+      <h2>Software Assignments</h2>(none)</td>
+    </tr>
+   </table>
+  </div>
+  <a name="module_merlin_width_adapter_0"> </a>
+  <div>
+   <hr/>
+   <h2>merlin_width_adapter_0</h2>altera_merlin_width_adapter v14.0
+   <br/>
+   <div class="greydiv">
+    <table class="connectionboxes">
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_sgdma_0">sgdma_0</a>
+      </td>
+      <td class="from">out&#160;&#160;</td>
+      <td class="main" rowspan="12">merlin_width_adapter_0</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;sink</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="4">
+       <a href="#module_pcie_hard_ip_0">pcie_hard_ip_0</a>
+      </td>
+      <td class="from">pcie_core_reset&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;clk_reset</td>
+     </tr>
+     <tr>
+      <td class="from">pcie_core_clk&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;clk</td>
+     </tr>
+     <tr style="height:6px">
+      <td></td>
+     </tr>
+     <tr>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_clk_50">clk_50</a>
+      </td>
+      <td class="from">clk_reset&#160;&#160;</td>
+     </tr>
+     <tr>
+      <td class="to">&#160;&#160;clk_reset</td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="from">src&#160;&#160;</td>
+      <td class="neighbor" rowspan="2">
+       <a href="#module_merlin_demultiplexer_0">merlin_demultiplexer_0</a>
+      </td>
+     </tr>
+     <tr>
+      <td></td>
+      <td></td>
+      <td class="to">&#160;&#160;sink</td>
+     </tr>
+    </table>
+   </div>
+   <br/>
+   <br/>
+   <table class="flowbox">
+    <tr>
+     <td class="parametersbox">
+      <h2>Parameters</h2>
+      <table>
+       <tr>
+        <td class="parametername">IN_PKT_ADDR_H</td>
+        <td class="parametervalue">5</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_ADDR_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_DATA_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_DATA_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BYTEEN_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BYTEEN_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BYTE_CNT_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BYTE_CNT_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_TRANS_COMPRESSED_READ</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BURSTWRAP_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BURSTWRAP_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BURST_SIZE_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BURST_SIZE_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_RESPONSE_STATUS_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_RESPONSE_STATUS_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_TRANS_EXCLUSIVE</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BURST_TYPE_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_BURST_TYPE_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_ORI_BURST_SIZE_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_PKT_ORI_BURST_SIZE_H</td>
+        <td class="parametervalue">7</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_ST_DATA_W</td>
+        <td class="parametervalue">8</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_ADDR_H</td>
+        <td class="parametervalue">5</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_ADDR_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_DATA_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_DATA_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BYTEEN_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BYTEEN_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BYTE_CNT_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BYTE_CNT_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_TRANS_COMPRESSED_READ</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BURST_SIZE_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BURST_SIZE_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_RESPONSE_STATUS_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_RESPONSE_STATUS_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_TRANS_EXCLUSIVE</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BURST_TYPE_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_BURST_TYPE_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_ORI_BURST_SIZE_L</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_PKT_ORI_BURST_SIZE_H</td>
+        <td class="parametervalue">31</td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_ST_DATA_W</td>
+        <td class="parametervalue">32</td>
+       </tr>
+       <tr>
+        <td class="parametername">ST_CHANNEL_W</td>
+        <td class="parametervalue">6</td>
+       </tr>
+       <tr>
+        <td class="parametername">OPTIMIZE_FOR_RSP</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">RESPONSE_PATH</td>
+        <td class="parametervalue">0</td>
+       </tr>
+       <tr>
+        <td class="parametername">CONSTANT_BURST_SIZE</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">PACKING</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">IN_MERLIN_PACKET_FORMAT</td>
+        <td class="parametervalue"></td>
+       </tr>
+       <tr>
+        <td class="parametername">OUT_MERLIN_PACKET_FORMAT</td>
+        <td class="parametervalue"></td>
+       </tr>
+       <tr>
+        <td class="parametername">COMMAND_SIZE_W</td>
+        <td class="parametervalue">3</td>
+       </tr>
+       <tr>
+        <td class="parametername">ENABLE_ADDRESS_ALIGNMENT</td>
+        <td class="parametervalue">1</td>
+       </tr>
+       <tr>
+        <td class="parametername">AUTO_CLK_CLOCK_RATE</td>
+        <td class="parametervalue">125000000</td>
+       </tr>
+       <tr>
+        <td class="parametername">deviceFamily</td>
+        <td class="parametervalue">UNKNOWN</td>
+       </tr>
+       <tr>
+        <td class="parametername">generateLegacySim</td>
+        <td class="parametervalue">false</td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>&#160;&#160;
+   <table class="flowbox">
+    <tr>
+     <td class="parametersbox">
+      <h2>Software Assignments</h2>(none)</td>
+    </tr>
+   </table>
+  </div>
   <table class="blueBar">
    <tr>
-    <td class="l">generation took 0.02 seconds</td>
-    <td class="r">rendering took 0.08 seconds</td>
+    <td class="l">generation took 0.00 seconds</td>
+    <td class="r">rendering took 0.03 seconds</td>
    </tr>
   </table>
  </body>
