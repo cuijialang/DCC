@@ -13,36 +13,29 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity FIRFilter is
-    Generic ( 	coefficent_file : string := "X:\c\cpfeiffer\Projects\Microphonics\Vivado\SIM_FILES\coef.dat";    -- Filter coefficient file path
+    Generic ( 	--coefficent_file : string := "X:\c\cpfeiffer\Projects\Microphonics\Vivado\SIM_FILES\coef.dat";    -- Filter coefficient file path
 				fLength : INTEGER := 512;                               -- Filter length
 				aWidth	: INTEGER := 9);                                -- Address width
     Port ( 	clk 	: in STD_LOGIC;                                     -- Clock
 			rst 	: in STD_LOGIC;                                     -- Reset
 			start 	: in STD_LOGIC;                                     -- Start input (sampling clock)
 			x 		: in STD_LOGIC_VECTOR (15 downto 0);                -- Input sample 
-			y 		: out STD_LOGIC_VECTOR (15 downto 0) := x"0000");   -- Output sample
+			y 		: out STD_LOGIC_VECTOR (15 downto 0) := x"0000";
+			fir_ram_mem_addr		: out std_logic_vector(8 downto 0); 	 			
+			fir_ram_mem_ce			: out std_logic;
+			fir_ram_mem_rdata		: in std_logic_vector(31 downto 0); 	
+			fir_ram_mem_clk		: out std_logic
+	);   -- Output sample
 end FIRFilter;
 
 architecture behav_mainFIRFilter of FIRFilter is
 	--- Signals --------------------------------------------------------------
-    signal coefAddr, shiftRegRAddr, shiftRegWAddr : unsigned(aWidth-1 downto 0) := (others => '0');
-    signal coef_tmp, b_tmp : signed(31 downto 0) := (others => '0');
+    signal shiftRegRAddr, shiftRegWAddr : unsigned(aWidth-1 downto 0) := (others => '0');
+    signal b_tmp : signed(31 downto 0) := (others => '0');
     signal shiftRegIn, shiftRegOut, acc_tmp, x_tmp, tmp, x_in_tmp : signed(15 downto 0) := (others => '0');
     signal count : INTEGER := 0;																				-- counter variable
-    signal accRst, runMAC, coefCE, srrCE, srwCE, start_flag, done, clk_n : STD_LOGIC := '0';
+    signal accRst, runMAC, srrCE, srwCE, start_flag, done, clk_n : STD_LOGIC := '0';
     --- Components -----------------------------------------------------------
-    -- Coeffiecient RAM block --
-	component rRAM_Lx32     
-    generic(	mem_type   : string := "block"; 
-				dwidth     : integer := 32; 
-				awidth     : integer := 8; 
-				mem_size   : integer := 256;
-				c_file : string := "X:\c\cpfeiffer\Projects\Microphonics\Vivado\SIM_FILES\coef256.dat"); 
-    port (Addr      : in unsigned(aWidth-1 downto 0); 
-          CE        : in std_logic; 
-          Clk       : in std_logic; 
-          q         : out signed(31 downto 0) := (others=>'0')); 
-    end component;
     -- Taps RAM block --
     component rwRAM_Lx16    
 	generic(	mem_type   : string := "block"; 
@@ -69,16 +62,8 @@ architecture behav_mainFIRFilter of FIRFilter is
 	--------------------------------------------------------
 begin
 	clk_n <= not clk;
-    Coef : component rRAM_Lx32
-	generic map(	mem_type    => "block",
-					c_file 		=> coefficent_file,
-					awidth     	=> aWidth,
-					mem_size   	=> fLength)
-    port map (	Addr 	=> coefAddr, 
-				CE 		=> coefCE,
-				Clk 	=> clk_n, 
-				q 		=> coef_tmp); 
-
+	fir_ram_mem_clk <= not clk;
+	
     shiftReg : component rwRAM_Lx16
 	generic map(	mem_type    => "block",
 					awidth     => aWidth,
@@ -123,15 +108,15 @@ begin
 				if (count <= (fLength+1) and count >= 3) then
 					srrCE <= '1';
 					shiftRegRAddr <= to_unsigned(count-3,aWidth);
-					coefCE <= '1';
-					coefAddr <= to_unsigned(count-2,aWidth);
+					fir_ram_mem_ce <= '1';
+					fir_ram_mem_addr <= std_logic_vector(to_unsigned(count-2,aWidth));
 				elsif (count = 2) then
 					srrCE <= '0';
-					coefCE <= '1';
-					coefAddr <= to_unsigned(count-2,aWidth);
+					fir_ram_mem_ce <= '1';
+					fir_ram_mem_addr <= std_logic_vector(to_unsigned(count-2,aWidth));
 				else
 					srrCE <= '0';
-					coefCE <= '0';
+					fir_ram_mem_ce <= '0';
 				end if; 
 				
 				if (count <= fLength and count > 1) then
@@ -140,14 +125,14 @@ begin
 					shiftRegWAddr <= to_unsigned(count-1,aWidth);
 					shiftRegIn <= shiftRegOut;
 					x_tmp <= shiftRegOut;
-					b_tmp <= coef_tmp;
+					b_tmp <= signed(fir_ram_mem_rdata);
 				elsif (count = 1) then
 					srwCE <= '1';
 					runMAC <= '1';
 					shiftRegWAddr <= to_unsigned(0,aWidth);
 					shiftRegIn <= x_in_tmp;
 					x_tmp <= x_in_tmp;
-					b_tmp <= coef_tmp;
+					b_tmp <= signed(fir_ram_mem_rdata);
 				else    
 					runMAC <= '0';
 					srwCE <= '0';

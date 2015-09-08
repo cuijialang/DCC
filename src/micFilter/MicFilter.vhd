@@ -44,7 +44,13 @@ entity micFilter is
 			mic 		: in STD_LOGIC_VECTOR ( 15 downto 0 );					-- Mechanical sensor signal input v(q)
 			rst 		: in STD_LOGIC;											-- Synchronous reset input
 			gamma_corr 	: out STD_LOGIC_VECTOR ( 15 downto 0 ) := x"0000";		-- Filter output y(k)
-			clk_outp 	: out STD_LOGIC := '0');								-- Clock output
+			clk_outp 	: out STD_LOGIC := '0';
+			fir_ram_mem_addr		: out std_logic_vector(8 downto 0); 	 			
+			fir_ram_mem_ce		: out std_logic;
+			fir_ram_mem_rdata	: in std_logic_vector(31 downto 0); 	
+			fir_ram_mem_clk		: out std_logic
+			
+	);								-- Clock output
   end micFilter;
 
 architecture micFilter_behav of micFilter is
@@ -72,14 +78,19 @@ architecture micFilter_behav of micFilter is
 	
 	-- FIR Filter --
 	component FIRFilter is
-	generic ( 	coefficent_file : string; 
+	generic ( 
 				fLength : INTEGER;                            
 				aWidth	: INTEGER);                             
 	port (	clk 	: in STD_LOGIC;
 			rst 	: in STD_LOGIC;
 			start 	: in STD_LOGIC;
 			x 		: in STD_LOGIC_VECTOR ( 15 downto 0 );
-			y 		: out STD_LOGIC_VECTOR ( 15 downto 0 ));
+			y 		: out STD_LOGIC_VECTOR ( 15 downto 0 );
+			fir_ram_mem_addr		: out std_logic_vector(8 downto 0); 	 			
+			fir_ram_mem_ce		: out std_logic;
+			fir_ram_mem_rdata	: in std_logic_vector(31 downto 0); 	
+			fir_ram_mem_clk		: out std_logic
+	);
 	end component;
 	
 	-- Downsample Filter --
@@ -184,14 +195,19 @@ begin
 				y 		=> s_10k);
 	
 	FIRFilter_0: component FIRFilter
-	generic map( 	coefficent_file => FIR_cFile, 
+	generic map( 
 					fLength 		=> FIR_length,                            
 					aWidth			=> FIR_aWidth) 
     port map (	clk 	=> clk_25M,
 				rst 	=> reset,
 				start 	=> clk_10k,
 				x		=> s_10k,
-				y		=> s_HP);
+				y		=> s_HP,
+				fir_ram_mem_addr		=> fir_ram_mem_addr,		 			
+				fir_ram_mem_ce			=> fir_ram_mem_ce,		
+				fir_ram_mem_rdata		=> fir_ram_mem_rdata,	
+				fir_ram_mem_clk		=> fir_ram_mem_clk	
+	);
 
 	AdaptiveFilter_0: component AdaptiveFilter
 	generic map( 	weight 	=> adFil_weight,			     

@@ -30,42 +30,16 @@
 			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
 			pcie_hard_ip_0_reconfig_togxb_data                : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- data
 			pcie_hard_ip_0_reconfig_fromgxb_0_data            : out std_logic_vector(4 downto 0);                     -- data
-			inter5_4_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_4_valid                                    : out std_logic;                                        -- valid
-			inter5_4_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_4_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_4_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_4_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter5_0_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_0_valid                                    : out std_logic;                                        -- valid
-			inter5_0_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_0_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_0_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_0_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter4_ready                                      : in  std_logic                     := 'X';             -- ready
-			inter4_valid                                      : out std_logic;                                        -- valid
-			inter4_data                                       : out std_logic_vector(31 downto 0);                    -- data
-			inter4_channel                                    : out std_logic_vector(5 downto 0);                     -- channel
-			inter4_startofpacket                              : out std_logic;                                        -- startofpacket
-			inter4_endofpacket                                : out std_logic;                                        -- endofpacket
-			inter5_1_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_1_valid                                    : out std_logic;                                        -- valid
-			inter5_1_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_1_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_1_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_1_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter5_2_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_2_valid                                    : out std_logic;                                        -- valid
-			inter5_2_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_2_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_2_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_2_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter5_3_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_3_valid                                    : out std_logic;                                        -- valid
-			inter5_3_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_3_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_3_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_3_endofpacket                              : out std_logic                                         -- endofpacket
+			fir_ram_mem_s2_address                            : in  std_logic_vector(8 downto 0)  := (others => 'X'); -- address
+			fir_ram_mem_s2_chipselect                         : in  std_logic                     := 'X';             -- chipselect
+			fir_ram_mem_s2_clken                              : in  std_logic                     := 'X';             -- clken
+			fir_ram_mem_s2_write                              : in  std_logic                     := 'X';             -- write
+			fir_ram_mem_s2_readdata                           : out std_logic_vector(31 downto 0);                    -- readdata
+			fir_ram_mem_s2_writedata                          : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			fir_ram_mem_s2_byteenable                         : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- byteenable
+			fir_ram_mem_clk2_clk                              : in  std_logic                     := 'X';             -- clk
+			fir_ram_mem_reset2_reset                          : in  std_logic                     := 'X';             -- reset
+			fir_ram_mem_reset2_reset_req                      : in  std_logic                     := 'X'              -- reset_req
 		);
 	end component DCC_QSYS;
 
@@ -101,41 +75,15 @@
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => CONNECTED_TO_pcie_hard_ip_0_tx_out_tx_dataout_0,                --             pcie_hard_ip_0_tx_out.tx_dataout_0
 			pcie_hard_ip_0_reconfig_togxb_data                => CONNECTED_TO_pcie_hard_ip_0_reconfig_togxb_data,                --     pcie_hard_ip_0_reconfig_togxb.data
 			pcie_hard_ip_0_reconfig_fromgxb_0_data            => CONNECTED_TO_pcie_hard_ip_0_reconfig_fromgxb_0_data,            -- pcie_hard_ip_0_reconfig_fromgxb_0.data
-			inter5_4_ready                                    => CONNECTED_TO_inter5_4_ready,                                    --                          inter5_4.ready
-			inter5_4_valid                                    => CONNECTED_TO_inter5_4_valid,                                    --                                  .valid
-			inter5_4_data                                     => CONNECTED_TO_inter5_4_data,                                     --                                  .data
-			inter5_4_channel                                  => CONNECTED_TO_inter5_4_channel,                                  --                                  .channel
-			inter5_4_startofpacket                            => CONNECTED_TO_inter5_4_startofpacket,                            --                                  .startofpacket
-			inter5_4_endofpacket                              => CONNECTED_TO_inter5_4_endofpacket,                              --                                  .endofpacket
-			inter5_0_ready                                    => CONNECTED_TO_inter5_0_ready,                                    --                          inter5_0.ready
-			inter5_0_valid                                    => CONNECTED_TO_inter5_0_valid,                                    --                                  .valid
-			inter5_0_data                                     => CONNECTED_TO_inter5_0_data,                                     --                                  .data
-			inter5_0_channel                                  => CONNECTED_TO_inter5_0_channel,                                  --                                  .channel
-			inter5_0_startofpacket                            => CONNECTED_TO_inter5_0_startofpacket,                            --                                  .startofpacket
-			inter5_0_endofpacket                              => CONNECTED_TO_inter5_0_endofpacket,                              --                                  .endofpacket
-			inter4_ready                                      => CONNECTED_TO_inter4_ready,                                      --                            inter4.ready
-			inter4_valid                                      => CONNECTED_TO_inter4_valid,                                      --                                  .valid
-			inter4_data                                       => CONNECTED_TO_inter4_data,                                       --                                  .data
-			inter4_channel                                    => CONNECTED_TO_inter4_channel,                                    --                                  .channel
-			inter4_startofpacket                              => CONNECTED_TO_inter4_startofpacket,                              --                                  .startofpacket
-			inter4_endofpacket                                => CONNECTED_TO_inter4_endofpacket,                                --                                  .endofpacket
-			inter5_1_ready                                    => CONNECTED_TO_inter5_1_ready,                                    --                          inter5_1.ready
-			inter5_1_valid                                    => CONNECTED_TO_inter5_1_valid,                                    --                                  .valid
-			inter5_1_data                                     => CONNECTED_TO_inter5_1_data,                                     --                                  .data
-			inter5_1_channel                                  => CONNECTED_TO_inter5_1_channel,                                  --                                  .channel
-			inter5_1_startofpacket                            => CONNECTED_TO_inter5_1_startofpacket,                            --                                  .startofpacket
-			inter5_1_endofpacket                              => CONNECTED_TO_inter5_1_endofpacket,                              --                                  .endofpacket
-			inter5_2_ready                                    => CONNECTED_TO_inter5_2_ready,                                    --                          inter5_2.ready
-			inter5_2_valid                                    => CONNECTED_TO_inter5_2_valid,                                    --                                  .valid
-			inter5_2_data                                     => CONNECTED_TO_inter5_2_data,                                     --                                  .data
-			inter5_2_channel                                  => CONNECTED_TO_inter5_2_channel,                                  --                                  .channel
-			inter5_2_startofpacket                            => CONNECTED_TO_inter5_2_startofpacket,                            --                                  .startofpacket
-			inter5_2_endofpacket                              => CONNECTED_TO_inter5_2_endofpacket,                              --                                  .endofpacket
-			inter5_3_ready                                    => CONNECTED_TO_inter5_3_ready,                                    --                          inter5_3.ready
-			inter5_3_valid                                    => CONNECTED_TO_inter5_3_valid,                                    --                                  .valid
-			inter5_3_data                                     => CONNECTED_TO_inter5_3_data,                                     --                                  .data
-			inter5_3_channel                                  => CONNECTED_TO_inter5_3_channel,                                  --                                  .channel
-			inter5_3_startofpacket                            => CONNECTED_TO_inter5_3_startofpacket,                            --                                  .startofpacket
-			inter5_3_endofpacket                              => CONNECTED_TO_inter5_3_endofpacket                               --                                  .endofpacket
+			fir_ram_mem_s2_address                            => CONNECTED_TO_fir_ram_mem_s2_address,                            --                    fir_ram_mem_s2.address
+			fir_ram_mem_s2_chipselect                         => CONNECTED_TO_fir_ram_mem_s2_chipselect,                         --                                  .chipselect
+			fir_ram_mem_s2_clken                              => CONNECTED_TO_fir_ram_mem_s2_clken,                              --                                  .clken
+			fir_ram_mem_s2_write                              => CONNECTED_TO_fir_ram_mem_s2_write,                              --                                  .write
+			fir_ram_mem_s2_readdata                           => CONNECTED_TO_fir_ram_mem_s2_readdata,                           --                                  .readdata
+			fir_ram_mem_s2_writedata                          => CONNECTED_TO_fir_ram_mem_s2_writedata,                          --                                  .writedata
+			fir_ram_mem_s2_byteenable                         => CONNECTED_TO_fir_ram_mem_s2_byteenable,                         --                                  .byteenable
+			fir_ram_mem_clk2_clk                              => CONNECTED_TO_fir_ram_mem_clk2_clk,                              --                  fir_ram_mem_clk2.clk
+			fir_ram_mem_reset2_reset                          => CONNECTED_TO_fir_ram_mem_reset2_reset,                          --                fir_ram_mem_reset2.reset
+			fir_ram_mem_reset2_reset_req                      => CONNECTED_TO_fir_ram_mem_reset2_reset_req                       --                                  .reset_req
 		);
 

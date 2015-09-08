@@ -328,7 +328,12 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			mic 		: in STD_LOGIC_VECTOR ( 15 downto 0 );					-- Mechanical sensor signal input v(q)
 			rst 		: in STD_LOGIC;											-- Synchronous reset input
 			gamma_corr 	: out STD_LOGIC_VECTOR ( 15 downto 0 ) := x"0000";		-- Filter output y(k)
-			clk_outp 	: out STD_LOGIC := '0');								-- Clock output
+			clk_outp 	: out STD_LOGIC := '0';
+			fir_ram_mem_addr		: out std_logic_vector(8 downto 0); 	 			
+			fir_ram_mem_ce		: out std_logic;
+			fir_ram_mem_rdata	: in std_logic_vector(31 downto 0); 	
+			fir_ram_mem_clk		: out std_logic
+	);								
   END COMPONENT micFilter;
   
 	COMPONENT DCC_QSYS is
@@ -340,43 +345,17 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 			pcie_hard_ip_0_rx_in_rx_datain_0                  : in  std_logic                     := 'X';             -- rx_datain_0
 			pcie_hard_ip_0_tx_out_tx_dataout_0                : out std_logic;                                        -- tx_dataout_0
 			sw_external_connection_export                     : in  std_logic_vector(17 downto 0) := (others => 'X'); -- export
-			ledr_external_connection_export                   : out std_logic_vector(17 downto 0);                     -- export
-			inter5_4_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_4_valid                                    : out std_logic;                                        -- valid
-			inter5_4_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_4_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_4_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_4_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter5_0_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_0_valid                                    : out std_logic;                                        -- valid
-			inter5_0_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_0_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_0_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_0_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter4_ready                                      : in  std_logic                     := 'X';             -- ready
-			inter4_valid                                      : out std_logic;                                        -- valid
-			inter4_data                                       : out std_logic_vector(31 downto 0);                    -- data
-			inter4_channel                                    : out std_logic_vector(5 downto 0);                     -- channel
-			inter4_startofpacket                              : out std_logic;                                        -- startofpacket
-			inter4_endofpacket                                : out std_logic;                                        -- endofpacket
-			inter5_1_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_1_valid                                    : out std_logic;                                        -- valid
-			inter5_1_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_1_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_1_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_1_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter5_2_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_2_valid                                    : out std_logic;                                        -- valid
-			inter5_2_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_2_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_2_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_2_endofpacket                              : out std_logic;                                        -- endofpacket
-			inter5_3_ready                                    : in  std_logic                     := 'X';             -- ready
-			inter5_3_valid                                    : out std_logic;                                        -- valid
-			inter5_3_data                                     : out std_logic_vector(31 downto 0);                    -- data
-			inter5_3_channel                                  : out std_logic_vector(5 downto 0);                     -- channel
-			inter5_3_startofpacket                            : out std_logic;                                        -- startofpacket
-			inter5_3_endofpacket                              : out std_logic                                         -- endofpacket
+			ledr_external_connection_export                   : out std_logic_vector(17 downto 0);                    -- export
+			fir_ram_mem_s2_address                            : in  std_logic_vector(8 downto 0)  := (others => 'X'); -- address
+			fir_ram_mem_s2_chipselect                         : in  std_logic                     := 'X';             -- chipselect
+			fir_ram_mem_s2_clken                              : in  std_logic                     := 'X';             -- clken
+			fir_ram_mem_s2_write                              : in  std_logic                     := 'X';             -- write
+			fir_ram_mem_s2_readdata                           : out std_logic_vector(31 downto 0);                    -- readdata
+			fir_ram_mem_s2_writedata                          : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			fir_ram_mem_s2_byteenable                         : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- byteenable
+			fir_ram_mem_clk2_clk                              : in  std_logic                     := 'X';             -- clk
+			fir_ram_mem_reset2_reset                          : in  std_logic                     := 'X';             -- reset
+			fir_ram_mem_reset2_reset_req                      : in  std_logic                     := 'X'              -- reset_req
 		);
 	END COMPONENT DCC_QSYS;
 	
@@ -424,6 +403,13 @@ ARCHITECTURE DCC_ARCH OF DCC IS
 	signal sInter_channel : inter_channel_type := (others => (others => '0'));        -- channel
 	signal sInter_startofpacket : std_logic_vector(15 downto 0) := (others => '0');        -- startofpacket
 	signal sInter_endofpacket : std_logic_vector(15 downto 0) := (others => '0'); 
+	
+	signal sFir_ram_mem_addr	: std_logic_vector(8 downto 0) := (others => '0'); 	 			
+	signal sFir_ram_mem_ce		: std_logic					:= '0';
+	signal sFir_ram_mem_rdata	: std_logic_vector(31 downto 0) := (others => '0'); 	
+	signal sFir_ram_mem_clk		: std_logic 				:= '0';
+	
+	
 BEGIN
 
 ---------------------------------------------------------------
@@ -476,42 +462,16 @@ BEGIN
 			pcie_hard_ip_0_tx_out_tx_dataout_0                => PCIE_TX_P(0),				-- tx_dataout_0
 			sw_external_connection_export                     => SW,								-- export
 			ledr_external_connection_export                   => LEDR,							-- export	
-			inter5_4_ready                                    => sInter_ready(5),         -- ready
-			inter5_4_valid                                    => sInter_valid(5),         -- valid
-			inter5_4_data                                     => sInter_data(5),          -- data
-			inter5_4_channel                                  => sInter_channel(5),          -- channel
-			inter5_4_startofpacket                            => sInter_startofpacket(5),          -- startofpacket
-			inter5_4_endofpacket                              => sInter_endofpacket(5),          -- endofpacket
-			inter5_0_ready                                    => sInter_ready(1),          -- ready
-			inter5_0_valid                                    => sInter_valid(1),          -- valid
-			inter5_0_data                                     => sInter_data(1),          -- data
-			inter5_0_channel                                  => sInter_channel(1),          -- channel
-			inter5_0_startofpacket                            => sInter_startofpacket(1),          -- startofpacket
-			inter5_0_endofpacket                              => sInter_endofpacket(1),          -- endofpacket
-			inter4_ready                                      => sInter_ready(0),          -- ready
-			inter4_valid                                      => sInter_valid(0),          -- valid
-			inter4_data                                       => sInter_data(0),         -- data
-			inter4_channel                                    => sInter_channel(0),          -- channel
-			inter4_startofpacket                              => sInter_startofpacket(0),          -- startofpacket
-			inter4_endofpacket                                => sInter_endofpacket(0),          -- endofpacket
-			inter5_1_ready                                    => sInter_ready(2),          -- ready
-			inter5_1_valid                                    => sInter_valid(2),          -- valid
-			inter5_1_data                                     => sInter_data(2),          -- data
-			inter5_1_channel                                  => sInter_channel(2),          -- channel
-			inter5_1_startofpacket                            => sInter_startofpacket(2),          -- startofpacket
-			inter5_1_endofpacket                              => sInter_endofpacket(2),          -- endofpacket
-			inter5_2_ready                                    => sInter_ready(3),          -- ready
-			inter5_2_valid                                    => sInter_valid(3),          -- valid
-			inter5_2_data                                     => sInter_data(3),          -- data
-			inter5_2_channel                                  => sInter_channel(3),          -- channel
-			inter5_2_startofpacket                            => sInter_startofpacket(3),          -- startofpacket
-			inter5_2_endofpacket                              => sInter_endofpacket(3),          -- endofpacket
-			inter5_3_ready                                    => sInter_ready(4),          -- ready
-			inter5_3_valid                                    => sInter_valid(4),          -- valid
-			inter5_3_data                                     => sInter_data(4),          -- data
-			inter5_3_channel                                  => sInter_channel(4),          -- channel
-			inter5_3_startofpacket                            => sInter_startofpacket(4),          -- startofpacket
-			inter5_3_endofpacket                              => sInter_endofpacket(4)          -- endofpacket
+			fir_ram_mem_s2_address                            => sFir_ram_mem_addr,		 	-- address
+			fir_ram_mem_s2_chipselect                         => '1',		 					-- chipselect
+			fir_ram_mem_s2_clken                              => sFir_ram_mem_ce, 		 	-- clken
+			fir_ram_mem_s2_write                              => open,	   				 	-- write
+			fir_ram_mem_s2_readdata                           => sFir_ram_mem_rdata, 	 	-- readdata
+			fir_ram_mem_s2_writedata                          => open,   				 	-- writedata
+			fir_ram_mem_s2_byteenable                         => open,   				 	-- byteenable
+			fir_ram_mem_clk2_clk                              => sFir_ram_mem_clk,   				 	-- clk
+			fir_ram_mem_reset2_reset                          => '0',   				 	-- reset
+			fir_ram_mem_reset2_reset_req                      => '0'         				 	-- reset_req
 		);		
 	
 	PCIE_WAKE_N <= '1';
@@ -583,7 +543,11 @@ BEGIN
 			mic 			=> sMic,						-- Mechanical sensor signal input v(q)
 			rst 			=> reset,						-- Synchronous reset input
 			gamma_corr 	=> sGamma_corr,						-- Filter output y(k)
-			clk_outp 	=> open						-- Clock output
+			clk_outp 	=> open,						-- Clock output
+			fir_ram_mem_addr		=> sFir_ram_mem_addr,	 			
+			fir_ram_mem_ce		=> sFir_ram_mem_ce,	
+			fir_ram_mem_rdata	=> sFir_ram_mem_rdata,
+			fir_ram_mem_clk		=> sFir_ram_mem_clk	
 	);
 ---------------------------------------------------------------
 -- Test
