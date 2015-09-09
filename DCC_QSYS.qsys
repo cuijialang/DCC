@@ -65,14 +65,6 @@
          type = "int";
       }
    }
-   element fir_ram_mem.s1
-   {
-      datum baseAddress
-      {
-         value = "131072";
-         type = "String";
-      }
-   }
    element ledr.s1
    {
       datum _lockedAddress
@@ -91,6 +83,19 @@
       datum baseAddress
       {
          value = "160";
+         type = "String";
+      }
+   }
+   element fir_ram_mem.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "131072";
          type = "String";
       }
    }
